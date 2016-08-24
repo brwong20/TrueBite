@@ -1,0 +1,522 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A061587C1D67BB36005C7C74 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A061587B1D67BB36005C7C74 /* main.m */; };
+		A061587F1D67BB36005C7C74 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A061587E1D67BB36005C7C74 /* AppDelegate.m */; };
+		A06158821D67BB36005C7C74 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A06158811D67BB36005C7C74 /* MapViewController.m */; };
+		A06158851D67BB36005C7C74 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A06158831D67BB36005C7C74 /* Main.storyboard */; };
+		A06158871D67BB36005C7C74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A06158861D67BB36005C7C74 /* Assets.xcassets */; };
+		A061588A1D67BB36005C7C74 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A06158881D67BB36005C7C74 /* LaunchScreen.storyboard */; };
+		A0BCBD821D67C47200C9ED04 /* RestaurantDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD811D67C47200C9ED04 /* RestaurantDataSource.m */; };
+		A0BCBD901D67C95C00C9ED04 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BCBD8F1D67C95C00C9ED04 /* MobileCoreServices.framework */; };
+		A0BCBD921D67C96600C9ED04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BCBD911D67C96600C9ED04 /* Foundation.framework */; };
+		A0BCBD941D67C96C00C9ED04 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BCBD931D67C96C00C9ED04 /* UIKit.framework */; };
+		A0BCBD971D67CCB000C9ED04 /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD961D67CCB000C9ED04 /* LocationManager.m */; };
+		A0BCBD9A1D693F9400C9ED04 /* RestaurantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD991D693F9400C9ED04 /* RestaurantListViewController.m */; };
+		A0BCBD9D1D6940AA00C9ED04 /* RestaurantTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD9C1D6940AA00C9ED04 /* RestaurantTableViewCell.m */; };
+		A0BCBDA01D6A4A5400C9ED04 /* Restaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD9F1D6A4A5400C9ED04 /* Restaurant.m */; };
+		A0BCBDA31D6A6C0F00C9ED04 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBDA21D6A6C0F00C9ED04 /* LoginViewController.m */; };
+		A0BCBDA61D6A6C2200C9ED04 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBDA51D6A6C2200C9ED04 /* User.m */; };
+		A0BF221A1D6AC0E80024148A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0BF22191D6AC0E80024148A /* GoogleService-Info.plist */; };
+		A0BF221F1D6ACEE70024148A /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221B1D6ACEE70024148A /* Bolts.framework */; };
+		A0BF22201D6ACEE70024148A /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221C1D6ACEE70024148A /* FBSDKCoreKit.framework */; };
+		A0BF22211D6ACEE80024148A /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221D1D6ACEE70024148A /* FBSDKLoginKit.framework */; };
+		A0BF22221D6ACEE80024148A /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221E1D6ACEE70024148A /* FBSDKShareKit.framework */; };
+		A0BF222A1D6B9F6A0024148A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF22291D6B9F6A0024148A /* SystemConfiguration.framework */; };
+		A0BF222D1D6CF6CF0024148A /* LayoutBounds.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BF222C1D6CF6CF0024148A /* LayoutBounds.m */; };
+		A0BF22301D6D01C60024148A /* RestaurantDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BF222F1D6D01C60024148A /* RestaurantDetailViewController.m */; };
+		CE7A8D8675EBA8C7A66C316F /* libPods-Foodwise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D986CDD8FABAFDB8F1B7BFD1 /* libPods-Foodwise.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5698917C72853E04C098ED87 /* Pods-Foodwise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Foodwise.release.xcconfig"; path = "Pods/Target Support Files/Pods-Foodwise/Pods-Foodwise.release.xcconfig"; sourceTree = "<group>"; };
+		A06158771D67BB36005C7C74 /* Foodwise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Foodwise.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A061587B1D67BB36005C7C74 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A061587D1D67BB36005C7C74 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A061587E1D67BB36005C7C74 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A06158801D67BB36005C7C74 /* MapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		A06158811D67BB36005C7C74 /* MapViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		A06158841D67BB36005C7C74 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A06158861D67BB36005C7C74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A06158891D67BB36005C7C74 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A061588B1D67BB36005C7C74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A0BCBD801D67C47200C9ED04 /* RestaurantDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantDataSource.h; sourceTree = "<group>"; };
+		A0BCBD811D67C47200C9ED04 /* RestaurantDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantDataSource.m; sourceTree = "<group>"; };
+		A0BCBD871D67C4F300C9ED04 /* FoodwiseDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoodwiseDefines.h; sourceTree = "<group>"; };
+		A0BCBD8F1D67C95C00C9ED04 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		A0BCBD911D67C96600C9ED04 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A0BCBD931D67C96C00C9ED04 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A0BCBD951D67CCB000C9ED04 /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
+		A0BCBD961D67CCB000C9ED04 /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
+		A0BCBD981D693F9400C9ED04 /* RestaurantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantListViewController.h; sourceTree = "<group>"; };
+		A0BCBD991D693F9400C9ED04 /* RestaurantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantListViewController.m; sourceTree = "<group>"; };
+		A0BCBD9B1D6940AA00C9ED04 /* RestaurantTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantTableViewCell.h; sourceTree = "<group>"; };
+		A0BCBD9C1D6940AA00C9ED04 /* RestaurantTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantTableViewCell.m; sourceTree = "<group>"; };
+		A0BCBD9E1D6A4A5400C9ED04 /* Restaurant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Restaurant.h; sourceTree = "<group>"; };
+		A0BCBD9F1D6A4A5400C9ED04 /* Restaurant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Restaurant.m; sourceTree = "<group>"; };
+		A0BCBDA11D6A6C0F00C9ED04 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		A0BCBDA21D6A6C0F00C9ED04 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		A0BCBDA41D6A6C2200C9ED04 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		A0BCBDA51D6A6C2200C9ED04 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		A0BF22191D6AC0E80024148A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A0BF221B1D6ACEE70024148A /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Foodwise/Frameworks/Bolts.framework; sourceTree = "<group>"; };
+		A0BF221C1D6ACEE70024148A /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Foodwise/Frameworks/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		A0BF221D1D6ACEE70024148A /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Foodwise/Frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		A0BF221E1D6ACEE70024148A /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Foodwise/Frameworks/FBSDKShareKit.framework; sourceTree = "<group>"; };
+		A0BF22291D6B9F6A0024148A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A0BF222B1D6CF6CF0024148A /* LayoutBounds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayoutBounds.h; sourceTree = "<group>"; };
+		A0BF222C1D6CF6CF0024148A /* LayoutBounds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayoutBounds.m; sourceTree = "<group>"; };
+		A0BF222E1D6D01C60024148A /* RestaurantDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantDetailViewController.h; sourceTree = "<group>"; };
+		A0BF222F1D6D01C60024148A /* RestaurantDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantDetailViewController.m; sourceTree = "<group>"; };
+		BC68686BC25A08396ED9C36A /* Pods-Foodwise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Foodwise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Foodwise/Pods-Foodwise.debug.xcconfig"; sourceTree = "<group>"; };
+		D986CDD8FABAFDB8F1B7BFD1 /* libPods-Foodwise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Foodwise.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A06158741D67BB36005C7C74 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0BF222A1D6B9F6A0024148A /* SystemConfiguration.framework in Frameworks */,
+				A0BF22221D6ACEE80024148A /* FBSDKShareKit.framework in Frameworks */,
+				A0BF221F1D6ACEE70024148A /* Bolts.framework in Frameworks */,
+				A0BF22201D6ACEE70024148A /* FBSDKCoreKit.framework in Frameworks */,
+				A0BCBD941D67C96C00C9ED04 /* UIKit.framework in Frameworks */,
+				A0BCBD921D67C96600C9ED04 /* Foundation.framework in Frameworks */,
+				A0BF22211D6ACEE80024148A /* FBSDKLoginKit.framework in Frameworks */,
+				A0BCBD901D67C95C00C9ED04 /* MobileCoreServices.framework in Frameworks */,
+				CE7A8D8675EBA8C7A66C316F /* libPods-Foodwise.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2E9B04125A9A007442491D7D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BC68686BC25A08396ED9C36A /* Pods-Foodwise.debug.xcconfig */,
+				5698917C72853E04C098ED87 /* Pods-Foodwise.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A061586E1D67BB36005C7C74 = {
+			isa = PBXGroup;
+			children = (
+				A06158791D67BB36005C7C74 /* Foodwise */,
+				A06158781D67BB36005C7C74 /* Products */,
+				DA16B302DFB147F45FA043F7 /* Frameworks */,
+				2E9B04125A9A007442491D7D /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		A06158781D67BB36005C7C74 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A06158771D67BB36005C7C74 /* Foodwise.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A06158791D67BB36005C7C74 /* Foodwise */ = {
+			isa = PBXGroup;
+			children = (
+				A0BCBD831D67C47B00C9ED04 /* Model */,
+				A0BCBD841D67C48300C9ED04 /* Controller */,
+				A0BCBD851D67C49200C9ED04 /* View */,
+				A061587A1D67BB36005C7C74 /* Supporting Files */,
+			);
+			path = Foodwise;
+			sourceTree = "<group>";
+		};
+		A061587A1D67BB36005C7C74 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A061587D1D67BB36005C7C74 /* AppDelegate.h */,
+				A061587E1D67BB36005C7C74 /* AppDelegate.m */,
+				A061587B1D67BB36005C7C74 /* main.m */,
+				A06158861D67BB36005C7C74 /* Assets.xcassets */,
+				A061588B1D67BB36005C7C74 /* Info.plist */,
+				A0BF22191D6AC0E80024148A /* GoogleService-Info.plist */,
+				A0BCBD871D67C4F300C9ED04 /* FoodwiseDefines.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A0BCBD831D67C47B00C9ED04 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A0BCBDA41D6A6C2200C9ED04 /* User.h */,
+				A0BCBDA51D6A6C2200C9ED04 /* User.m */,
+				A0BCBD9E1D6A4A5400C9ED04 /* Restaurant.h */,
+				A0BCBD9F1D6A4A5400C9ED04 /* Restaurant.m */,
+				A0BCBD801D67C47200C9ED04 /* RestaurantDataSource.h */,
+				A0BCBD811D67C47200C9ED04 /* RestaurantDataSource.m */,
+				A0BCBD951D67CCB000C9ED04 /* LocationManager.h */,
+				A0BCBD961D67CCB000C9ED04 /* LocationManager.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A0BCBD841D67C48300C9ED04 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A06158801D67BB36005C7C74 /* MapViewController.h */,
+				A06158811D67BB36005C7C74 /* MapViewController.m */,
+				A0BCBD981D693F9400C9ED04 /* RestaurantListViewController.h */,
+				A0BCBD991D693F9400C9ED04 /* RestaurantListViewController.m */,
+				A0BCBDA11D6A6C0F00C9ED04 /* LoginViewController.h */,
+				A0BCBDA21D6A6C0F00C9ED04 /* LoginViewController.m */,
+				A0BF222E1D6D01C60024148A /* RestaurantDetailViewController.h */,
+				A0BF222F1D6D01C60024148A /* RestaurantDetailViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		A0BCBD851D67C49200C9ED04 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A06158831D67BB36005C7C74 /* Main.storyboard */,
+				A06158881D67BB36005C7C74 /* LaunchScreen.storyboard */,
+				A0BCBD9B1D6940AA00C9ED04 /* RestaurantTableViewCell.h */,
+				A0BCBD9C1D6940AA00C9ED04 /* RestaurantTableViewCell.m */,
+				A0BF222B1D6CF6CF0024148A /* LayoutBounds.h */,
+				A0BF222C1D6CF6CF0024148A /* LayoutBounds.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		DA16B302DFB147F45FA043F7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A0BF22291D6B9F6A0024148A /* SystemConfiguration.framework */,
+				A0BF221B1D6ACEE70024148A /* Bolts.framework */,
+				A0BF221C1D6ACEE70024148A /* FBSDKCoreKit.framework */,
+				A0BF221D1D6ACEE70024148A /* FBSDKLoginKit.framework */,
+				A0BF221E1D6ACEE70024148A /* FBSDKShareKit.framework */,
+				A0BCBD931D67C96C00C9ED04 /* UIKit.framework */,
+				A0BCBD911D67C96600C9ED04 /* Foundation.framework */,
+				A0BCBD8F1D67C95C00C9ED04 /* MobileCoreServices.framework */,
+				D986CDD8FABAFDB8F1B7BFD1 /* libPods-Foodwise.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A06158761D67BB36005C7C74 /* Foodwise */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A061588E1D67BB36005C7C74 /* Build configuration list for PBXNativeTarget "Foodwise" */;
+			buildPhases = (
+				B1C1D81EF1A86C27265C560E /* [CP] Check Pods Manifest.lock */,
+				A06158731D67BB36005C7C74 /* Sources */,
+				A06158741D67BB36005C7C74 /* Frameworks */,
+				A06158751D67BB36005C7C74 /* Resources */,
+				D61B9AD1A1BFD6D1A8C7BA2C /* [CP] Embed Pods Frameworks */,
+				C939B79F41A2CD2DCA88D9C7 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Foodwise;
+			productName = Foodwise;
+			productReference = A06158771D67BB36005C7C74 /* Foodwise.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A061586F1D67BB36005C7C74 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Brian Wong";
+				TargetAttributes = {
+					A06158761D67BB36005C7C74 = {
+						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 8EG7J9EQYF;
+					};
+				};
+			};
+			buildConfigurationList = A06158721D67BB36005C7C74 /* Build configuration list for PBXProject "Foodwise" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A061586E1D67BB36005C7C74;
+			productRefGroup = A06158781D67BB36005C7C74 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A06158761D67BB36005C7C74 /* Foodwise */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A06158751D67BB36005C7C74 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A061588A1D67BB36005C7C74 /* LaunchScreen.storyboard in Resources */,
+				A0BF221A1D6AC0E80024148A /* GoogleService-Info.plist in Resources */,
+				A06158871D67BB36005C7C74 /* Assets.xcassets in Resources */,
+				A06158851D67BB36005C7C74 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B1C1D81EF1A86C27265C560E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C939B79F41A2CD2DCA88D9C7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Foodwise/Pods-Foodwise-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D61B9AD1A1BFD6D1A8C7BA2C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Foodwise/Pods-Foodwise-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A06158731D67BB36005C7C74 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0BCBDA61D6A6C2200C9ED04 /* User.m in Sources */,
+				A0BCBDA01D6A4A5400C9ED04 /* Restaurant.m in Sources */,
+				A06158821D67BB36005C7C74 /* MapViewController.m in Sources */,
+				A0BCBD9A1D693F9400C9ED04 /* RestaurantListViewController.m in Sources */,
+				A0BF22301D6D01C60024148A /* RestaurantDetailViewController.m in Sources */,
+				A0BCBD9D1D6940AA00C9ED04 /* RestaurantTableViewCell.m in Sources */,
+				A0BCBD971D67CCB000C9ED04 /* LocationManager.m in Sources */,
+				A0BCBDA31D6A6C0F00C9ED04 /* LoginViewController.m in Sources */,
+				A061587F1D67BB36005C7C74 /* AppDelegate.m in Sources */,
+				A0BF222D1D6CF6CF0024148A /* LayoutBounds.m in Sources */,
+				A0BCBD821D67C47200C9ED04 /* RestaurantDataSource.m in Sources */,
+				A061587C1D67BB36005C7C74 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A06158831D67BB36005C7C74 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A06158841D67BB36005C7C74 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A06158881D67BB36005C7C74 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A06158891D67BB36005C7C74 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A061588C1D67BB36005C7C74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A061588D1D67BB36005C7C74 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A061588F1D67BB36005C7C74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC68686BC25A08396ED9C36A /* Pods-Foodwise.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Foodwise",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Foodwise/Frameworks",
+				);
+				INFOPLIST_FILE = Foodwise/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Brwong.Foodwise;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		A06158901D67BB36005C7C74 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5698917C72853E04C098ED87 /* Pods-Foodwise.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Foodwise",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Foodwise/Frameworks",
+				);
+				INFOPLIST_FILE = Foodwise/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Brwong.Foodwise;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A06158721D67BB36005C7C74 /* Build configuration list for PBXProject "Foodwise" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A061588C1D67BB36005C7C74 /* Debug */,
+				A061588D1D67BB36005C7C74 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A061588E1D67BB36005C7C74 /* Build configuration list for PBXNativeTarget "Foodwise" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A061588F1D67BB36005C7C74 /* Debug */,
+				A06158901D67BB36005C7C74 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A061586F1D67BB36005C7C74 /* Project object */;
+}
