@@ -16,6 +16,8 @@
 
 #define FOURSQUARE_SEARCH_BASE_URL @"https://api.foursquare.com/v2/venues/search"
 #define FOURSQUARE_EXPLORE_BASE_URL @"https://api.foursquare.com/v2/venues/explore"
+#define FOURSQUARE_VENUE_DETAILS_BASE_URL @"https://api.foursquare.com/v2/venues"
+#define FOURSQUARE_AUTOCOMPLETE_API @"https://api.foursquare.com/v2/venues/suggestcompletion"
 #define FOURSQUARE_API_KEY @"V2K0BSBPNB2VLLTG33NSYRJGJ3ANDGBJQSH2ZNRVEJZ1AW5S"
 #define FOURSQUARE_API_SECRET @"N321F5ZABWPKKUSCZ00K1ZXHXD1UMVJX3BZQ4EDYKORQ2O5Y"
 
@@ -25,5 +27,11 @@
 #define RESTAURANT_LONGITUDE_KEY    @"[@"venue"][@"location"][@"lng"]"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+#define APPLICATION_FRAME   [UIScreen mainScreen].bounds
+
+#define APPLICATION_FONT_COLOR   UIColorFromRGB(0x274B64)
+#define APPLICATION_BLUE_COLOR   UIColorFromRGB(0x17A1FF)
+#define APPLICATION_GREEN_COLOR  UIColorFromRGB(0x7AD313)
 
 #endif /* FoodwiseDefines_h */

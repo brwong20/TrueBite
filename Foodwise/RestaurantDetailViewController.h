@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "Restaurant.h"
+#import "FoursquareRestaurant.h"
+#import "PriceRestaurant.h"
 
 @interface RestaurantDetailViewController : UIViewController
 
-@property (nonatomic, strong)Restaurant *selectedRestaurant;
+@property (nonatomic, strong)FoursquareRestaurant *selectedRestaurant;
 
 @end

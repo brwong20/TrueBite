@@ -14,4 +14,16 @@
                            completionHandler:(void (^)(id JSON)) completionHandler
                               failureHandler:(void (^)(id error))failureHandler;
 
+- (void)getRestaurantDetailsFor:(NSString*)restauarantId
+              completionHandler:(void (^)(id JSON))completionHandler
+                 failureHandler:(void (^)(id error))failureHandler;
+
+- (void)getHoursForRestaurant:(NSString*)restauarantId
+              completionHandler:(void (^)(id JSON))completionHandler
+               failureHandler:(void (^)(id error))failureHandler;
+
+- (void)autoCompleteWithQuery:(NSString*)query withLatitude:(NSString*)latitude andLogitude:(NSString*)longitude
+            completionHandler:(void (^)(id JSON))completionHandler
+               failureHandler:(void (^)(id error))failureHandler;
+
 @end

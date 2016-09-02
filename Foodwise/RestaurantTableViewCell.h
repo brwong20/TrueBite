@@ -7,16 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "StarRatingView.h"
 
 @interface RestaurantTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *restaurantName;
 @property (nonatomic, strong) UILabel *addressLabel;
-@property (nonatomic, strong) UILabel *ratingLabel;
 @property (nonatomic, strong) UILabel *priceLabel;
 @property (nonatomic, strong) UILabel *distanceLabel;
+@property (nonatomic, strong) UILabel *categoryLabel;
 
 @property (nonatomic, strong) UIImageView *displayImage;
 @property (nonatomic, strong) UIView *priceContainerView;
+
+@property (nonatomic, strong) StarRatingView *starRatingView;
 
 @end

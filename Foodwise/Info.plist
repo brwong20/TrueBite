@@ -50,10 +50,25 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Show your location on the map</string>
+	<string>Retrieve nearby restuarants</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Show your location on the map</string>
+	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SF-UI-Display-Regular.otf</string>
+		<string>SF-UI-Display-Bold.otf</string>
+		<string>SF-UI-Text-RegularItalic.otf</string>
+		<string>SF-UI-Display-Light.otf</string>
+		<string>SF-UI-Display-Medium.otf</string>
+		<string>SF-UI-Display-Semibold.otf</string>
+		<string>SF-UI-Text-SemiboldItalic.otf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

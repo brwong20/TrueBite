@@ -8,6 +8,12 @@
 
 #import "LocationManager.h"
 
+@interface LocationManager()
+
+@property (nonatomic, assign) BOOL locationRetrieved;
+
+@end
+
 @implementation LocationManager
 
 + (LocationManager *)sharedLocationInstance
@@ -29,20 +35,26 @@
     if (self) {
         self.locationManager = [[CLLocationManager alloc]init];
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        self.locationManager.distanceFilter = 1000.0;
+        self.locationManager.distanceFilter = 500.0;
         self.locationManager.activityType = CLActivityTypeAutomotiveNavigation;
         self.locationManager.delegate = self;
-        [self checkLocationAuthorization];
     }
     
     return self;
 }
 
-- (void)checkLocationAuthorization
+- (void)requestLocationAuthorization
 {
-    switch ([CLLocationManager authorizationStatus]) {
+    [self.locationManager requestWhenInUseAuthorization];
+}
+
+//Delegate method called when the location manager is initialized AND/OR user authorizes location
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    self.authorizedStatus = status;
+    switch (status) {
         case kCLAuthorizationStatusNotDetermined: {
-            [self.locationManager requestWhenInUseAuthorization];
+            NSLog(@"Please go to settings and authorize location!!!");
             break;
         }
         case kCLAuthorizationStatusRestricted:
@@ -55,22 +67,13 @@
             [self startUpdatingLocation];
             break;
         }
-        
-    }
-
-}
-
-//Delegate method called when user authorizes location
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
-{
-    if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        [manager startUpdatingLocation];
     }
 }
 
 - (void)startUpdatingLocation
 {
     NSLog(@"///Location updates started///");
+    self.locationRetrieved = NO;
     [self.locationManager startUpdatingLocation];
 }
 
@@ -85,32 +88,23 @@
     NSLog(@"Location service failed with error %@", error);
 }
 
+#warning CALL ONLY WHEREVER NEEDED - REFRESH REST, MAP VIEWS, etc...
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
-    CLLocation *location = [locations lastObject];
-    self.currentLocation = location;
-    
-    if ([self.locationDelegate respondsToSelector:@selector(userDidUpdateLocation:)]) {
-        [self.locationDelegate userDidUpdateLocation:self.currentLocation];
+    //We only want to tell our app to update location once or we'll doing multiple get requests...
+    if (!self.locationRetrieved) {
+        self.locationRetrieved = YES;
+        
+        CLLocation *location = [locations lastObject];
+        self.currentLocation = location;
+        
+        //Get location once since restaurant retrieval is dependent upon this method
+        if ([self.locationDelegate respondsToSelector:@selector(userDidUpdateLocation:)]) {
+            [self.locationDelegate userDidUpdateLocation:self.currentLocation];
+        }
+        
+        [self stopUpdatingLocation];//Always stop after one update
     }
 }
-
-
--(void)fetchedData:(NSData *)responseData {
-    //parse out the json data
-    NSError* error;
-    NSDictionary* json = [NSJSONSerialization
-                          JSONObjectWithData:responseData
-                          
-                          options:kNilOptions
-                          error:&error];
-    
-    //The results from Google will be an array obtained from the NSDictionary object with the key "results".
-    NSArray* places = [json objectForKey:@"results"];
-    
-    //Write out the data to the console.
-    NSLog(@"Google Data: %@", places);
-}
-
 
 @end
