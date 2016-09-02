@@ -19,11 +19,12 @@
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
+@property (assign, nonatomic) CLAuthorizationStatus authorizedStatus;
 @property (assign, nonatomic) id<LocationManagerDelegate>locationDelegate;
 
 + (LocationManager*) sharedLocationInstance;
 
-- (void)checkLocationAuthorization;
+- (void)requestLocationAuthorization;
 - (void)startUpdatingLocation;
 - (void)stopUpdatingLocation;
 

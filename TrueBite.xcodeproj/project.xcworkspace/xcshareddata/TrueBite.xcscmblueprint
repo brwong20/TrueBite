@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "21B3B5DF4C64DE733D6CB822A05DC3F314638BA2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "2A72A3EAE3275C6748CE3A7F6D9770B59A424F23" : 0,
+    "21B3B5DF4C64DE733D6CB822A05DC3F314638BA2" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9A22BB4F-7E7A-47C3-BE5A-EAA3E1269EAA",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "2A72A3EAE3275C6748CE3A7F6D9770B59A424F23" : "Feedly-iOS\/",
+    "21B3B5DF4C64DE733D6CB822A05DC3F314638BA2" : "TrueBite-iOS\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "TrueBite",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "TrueBite.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/brwong20\/Foodwise.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "21B3B5DF4C64DE733D6CB822A05DC3F314638BA2"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Taplet\/Feedly-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2A72A3EAE3275C6748CE3A7F6D9770B59A424F23"
+    }
+  ]
+}

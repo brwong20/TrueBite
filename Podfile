@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-target 'Foodwise' do
+target 'TrueBite' do
 pod 'GoogleMaps'
 pod 'GooglePlaces'
 pod 'AFNetworking', '~> 3.0'

@@ -7,59 +7,258 @@
 //
 
 #import "RestaurantListViewController.h"
-#import "Restaurant.h"
+#import "FoursquareRestaurant.h"
 #import "RestaurantTableViewCell.h"
 #import "RestaurantDetailViewController.h"
+#import "PriceRestaurant.h"
+#import "LocationManager.h"
+#import "RestaurantDataSource.h"
+#import "LoginViewController.h"
+#import "MapViewController.h"
+#import "LocationPromptView.h"
+#import "FoodwiseDefines.h"
+#import "LoadingView.h"
+#import "TitlePageView.h"
+#import "AppDescriptionView.h"
+#import "StarRatingView.h"
+#import "LayoutBounds.h"
+#import "SearchViewController.h"
 
 #import <UIImageView+AFNetworking.h>
 #import <FirebaseAuth/FirebaseAuth.h>
+#import <FirebaseDatabase/FirebaseDatabase.h>
 
-@interface RestaurantListViewController()<UITableViewDataSource, UITableViewDelegate>
+@interface RestaurantListViewController()<LocationManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *restaurantArray;
+@property (nonatomic, strong) RestaurantDataSource *foodDataSource;
+@property (nonatomic, strong) LocationManager *locationManager;
+@property (nonatomic, strong) FIRDatabaseReference *dbRef;
+@property (nonatomic, strong) FIRDatabaseReference *avgPriceRef;
+@property (nonatomic, assign) FIRDatabaseHandle restaurantHandle;
+@property (nonatomic, strong) LoadingView *loadingView;
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UIImageView *searchButton;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) NSMutableArray *visibleRestaurants;
+@property (nonatomic, strong) NSString *averagePrice;
+
 
 @end
 
 @implementation RestaurantListViewController
 
+int i = 0;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.title = @"Foodwise";
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"Log out" style:UIBarButtonItemStylePlain target:self action:@selector(logoutCurrentUser)];
-    //self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showMapView)];
+    self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"TrueBite"]];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"Map" style:UIBarButtonItemStylePlain target:self action:@selector(showMapView)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(selectFilter)];
     
-    UIBarButtonItem *mapView = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showMapView)];
-    UIBarButtonItem *filter = [[UIBarButtonItem alloc]initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(selectFilter)];
-    
-    self.navigationItem.rightBarButtonItems = @[mapView, filter];
-    
-    self.tableView = [[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
+
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.view addSubview:self.tableView];
     
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = APPLICATION_BLUE_COLOR;
+    [self.refreshControl addTarget:self action:@selector(updateRestaurants) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:self.refreshControl];
     [self.tableView registerClass:[RestaurantTableViewCell class] forCellReuseIdentifier:@"cell"];
-
-    //To be used with our table view!
-    self.restaurantArray = [NSMutableArray arrayWithArray:[self.restaurantSet allObjects]];
     
-    //[self.tableView reloadData];
+    self.searchButton = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"map_button"]];
+    self.searchButton.center = CGPointMake(self.view.frame.size.width - self.view.frame.size.width * 0.15, self.view.frame.size.height - self.view.frame.size.width * 0.35);
+    self.searchButton.backgroundColor = [UIColor clearColor];
+    self.searchButton.userInteractionEnabled = YES;
+    [self.view addSubview:self.searchButton];
+    
+    self.tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(searchForRestaurant)];
+    self.tapGesture.numberOfTapsRequired = 1;
+    [self.searchButton addGestureRecognizer:self.tapGesture];
+    
+    //Check if user is logged into Firebase, if not, show login scren
+    FIRUser *currentUser = [[FIRAuth auth]currentUser];
+    if (currentUser)
+    {
+        NSLog(@"User is signed in!");
+    }
+    else
+    {
+        //Sign them in if somehow they're not
+        [[FIRAuth auth]signInAnonymouslyWithCompletion:^(FIRUser * _Nullable user, NSError * _Nullable error) {
+            if (!error) {
+                NSLog(@"Anon sign in successful!");
+                
+                //Add user into db
+                [[[[[FIRDatabase database]reference] child:@"users"]child:user.uid]
+                 setValue:@{@"anonymous":@(user.anonymous)}];
+            }
+        }];
+    }
+    
+    self.locationManager = [LocationManager sharedLocationInstance];
+#warning Be careful with this delegate since this instance is a SINGELTON - we can only delegate this to one class at a time!
+    self.locationManager.locationDelegate = self;
+    
+    self.dbRef = [[FIRDatabase database]reference];
+    
+    self.foodDataSource = [[RestaurantDataSource alloc]init];
+    self.restaurantSet = [[NSMutableSet alloc]init];
+    self.visibleRestaurants = [[NSMutableArray alloc]init];
+    
+    //self.loadingView = [[LoadingView alloc]initWithFrame:APPLICATION_FRAME];
+    
+    //Quick onboarding
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"com.truebite.onboarding.location"]) {
+        UIWindow *currentWindow = [UIApplication sharedApplication].keyWindow;
+        LocationPromptView *promptView = [[LocationPromptView alloc]initWithFrame:APPLICATION_FRAME];
+        [currentWindow addSubview:promptView];
+        
+        AppDescriptionView *appDescripView = [[AppDescriptionView alloc]initWithFrame:APPLICATION_FRAME];
+        [currentWindow addSubview:appDescripView];
+        
+        TitlePageView *title = [[TitlePageView alloc]initWithFrame:APPLICATION_FRAME];
+        [currentWindow addSubview:title];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
+    //Reload here so a price changed by the user is reflected. (i.e. selectedRestaurant)
+    [self.tableView reloadData];
 }
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.dbRef removeObserverWithHandle:self.restaurantHandle];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+}
+
+- (void)updateRestaurants
+{
+    //Simply update the location using the manager since the delegate method below will get called when a location is retrieved!
+    if (self.locationManager.authorizedStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        [self.locationManager startUpdatingLocation];
+    }else{
+        UIAlertController *locationAlert = [UIAlertController alertControllerWithTitle:@"Oops..." message:@"Looks like you haven't enabled location services yet. Please go to Settings to do so!" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self.refreshControl endRefreshing];
+            [self dismissViewControllerAnimated:locationAlert completion:nil];
+        }];
+        [locationAlert addAction:ok];
+        [self presentViewController:locationAlert animated:YES completion:nil];
+    }
+
+}
+
+- (void)userDidUpdateLocation:(CLLocation *)currentLocation
+{
+    
+    //Don't need loading page with refresh control
+    if (!self.refreshControl.refreshing) {
+        [self.view addSubview:self.loadingView];
+    }
+    
+    NSString *currentLat = [[NSNumber numberWithDouble:currentLocation.coordinate.latitude]stringValue];
+    NSString *currentLon = [[NSNumber numberWithDouble:currentLocation.coordinate.longitude]stringValue];
+
+    [self.foodDataSource retrieveNearbyRestaurantsWithLatitude:currentLat longitude:currentLon completionHandler:^(id JSON) {
+        NSArray *groups = JSON[@"response"][@"groups"];
+        
+        //NSLog(@"%@", JSON[@"response"]);
+        
+        NSDictionary *groupsData = [groups objectAtIndex:0];
+        NSArray *restaurantArray = [groupsData valueForKey:@"items"];
+        
+        //Remove and refresh all restuarants every time user pulls to refresh.
+        [self.restaurantSet removeAllObjects];
+        [self.visibleRestaurants removeAllObjects];
+        
+        for (NSDictionary *restaurantInfo in restaurantArray) {
+            FoursquareRestaurant *restaurant = [[FoursquareRestaurant alloc]initWithDictionary:restaurantInfo];
+            [self.restaurantSet addObject:restaurant];
+        }
+        
+#pragma Need at least one restaurant in db... Find a fix for this. Also what if we want to add a new key to our db? Have to do something like this as well
+//        for (FoursquareRestaurant *restaurant in self.restaurantSet) {
+//            //Update/Save restaurants by their id into db.
+//            [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
+//        }
+        
+        //Retrieve all restaurants stored in our db so we can get our price data if we have any.
+        [[self.dbRef child:@"restaurants"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+            NSDictionary *allRestaurants = snapshot.value;
+
+            //NSLog(@"%@", snapshot.value);
+            
+            if (allRestaurants.count > 0) {
+                for (FoursquareRestaurant *restaurant in self.restaurantSet) {
+                    NSDictionary *foundRestaurant = [allRestaurants objectForKey:restaurant.restaurantId];
+                    //If the restaurant isn't in our database, add it as a new node. otherwise it's a restaurant we already have saved so retrieve the relevant price data on it!
+                    if (foundRestaurant) {
+                        [restaurant retrievePriceDataFrom:foundRestaurant];
+                    }else{
+                        [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
+                    }
+                }
+                //After filtering and gathering price data on all restaurants, convert our set to an array to be used with our tableview!
+                [self.visibleRestaurants addObjectsFromArray:[self.restaurantSet allObjects]];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self sortWithFilter:@"distance"];
+                    
+                    [self.tableView reloadData];
+                
+                    if (self.loadingView.superview) {
+                        [self.loadingView removeFromSuperview];
+                    }
+                    
+                    if (self.refreshControl.refreshing) {//For when user pulls to refresh
+                        [self.refreshControl endRefreshing];
+                    }
+                });
+            }
+        }];
+    } failureHandler:^(id error) {
+        NSLog(@"Error retrieving restaurants: %@", error);
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Oops..." message:@"There was a problem trying to retrieve nearby restaurants. Please check your connection and try again!" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        }]];
+        
+        if (self.loadingView.superview) {
+            [self.loadingView removeFromSuperview];
+        }
+    }];
+}
+
+- (void)appWillResignActive:(NSNotification*)note
+{
+    [self.refreshControl endRefreshing];
+}
+
 
 - (void)showMapView
 {
-    [UIView animateWithDuration:0.5 animations:^{
-         [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:NO];
-         [self.navigationController popViewControllerAnimated:NO];
+    MapViewController* mapView = [[MapViewController alloc]init];
+    
+    //Don't set them to each other because if we change restaurantLocations in mapView, visibileRestaurants will change too... (pointers!).
+    mapView.restaurantLocations = [[NSMutableArray alloc]initWithArray:self.visibleRestaurants];
+    
+    [UIView animateWithDuration:0.4 animations:^{
+        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navigationController.view cache:NO];
+        [self.navigationController pushViewController:mapView animated:NO];
     }completion:nil];
 }
 
@@ -68,7 +267,7 @@
     UIAlertController *filterSheet = [UIAlertController alertControllerWithTitle:@"Select Filter" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *priceFilter = [UIAlertAction actionWithTitle:@"Price" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self sortWithFilter:@"price"];
+        [self sortWithFilter:@"individualAvgPrice"];
     }];
     UIAlertAction *distanceFilter = [UIAlertAction actionWithTitle:@"Distance" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self sortWithFilter:@"distance"];
@@ -80,29 +279,49 @@
     [filterSheet addAction:priceFilter];
     [filterSheet addAction:ratingFilter];
     [filterSheet addAction:distanceFilter];
+    [filterSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [filterSheet dismissViewControllerAnimated:YES completion:nil];
+    }]];
     
     [self presentViewController:filterSheet animated:YES completion:nil];
 }
 
 - (void)sortWithFilter:(NSString*)filter
 {
-    BOOL ascending = NO;
-    if ([filter isEqualToString:@"distance"]) {
-        ascending = YES;
+    BOOL ascending = YES;
+    if ([filter isEqualToString:@"rating.doubleValue"]) {
+        ascending = NO;
     }
     NSSortDescriptor *ratingOrder = [NSSortDescriptor sortDescriptorWithKey:filter ascending:ascending];
-    [self.restaurantArray sortUsingDescriptors:@[ratingOrder]];
+    [self.visibleRestaurants sortUsingDescriptors:@[ratingOrder]];
     [self.tableView reloadData];
 }
 
-- (void)logoutCurrentUser
+- (void)searchForRestaurant
 {
-    NSError *error;
-    [[FIRAuth auth]signOut:&error];
-    if (!error) {
-        NSLog(@"Sign out successful");
+    SearchViewController *searchView = [[SearchViewController alloc]init];
+    searchView.currentLocation = self.locationManager.currentLocation.coordinate;//Stores a copy of the value at that location in time instead of pointing this value which might change!
+    
+    //Get 5 restaurants nearby to prepopulate for user
+    NSMutableArray *nearby = [[NSMutableArray alloc]init];
+    if (self.visibleRestaurants.count >= 1) {
+        for (int i = 0; i < 5; ++i) {
+            [nearby addObject:[self.visibleRestaurants objectAtIndex:i]];
+            
+        }
     }
+    searchView.nearbyRestaurants = nearby;
+    [self.navigationController pushViewController:searchView animated:YES];
 }
+
+//- (void)logoutCurrentUser
+//{
+//    NSError *error;
+//    [[FIRAuth auth]signOut:&error];
+//    if (!error) {
+//        NSLog(@"Sign out successful");
+//    }
+//}
 
 
 #pragma mark - UITableView datasource/delegate methods
@@ -110,7 +329,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     RestaurantDetailViewController *detailView = [[RestaurantDetailViewController alloc]init];
-    detailView.selectedRestaurant = self.restaurantArray[indexPath.row];
+    detailView.selectedRestaurant = self.visibleRestaurants[indexPath.row];
     [self.navigationController pushViewController:detailView animated:YES];
 }
 
@@ -118,20 +337,22 @@
 {
     RestaurantTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     
-    Restaurant *restaurant = [self.restaurantArray objectAtIndex:indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.restaurantName.text = restaurant.name;
-    cell.addressLabel.text = restaurant.address;
-    cell.ratingLabel.text = [restaurant.rating stringValue];
-    cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2fmi", restaurant.distance.doubleValue];
-    //[cell.displayImage setImageWithURL:[NSURL URLWithString:restaurant.imageURL]];
     
+    FoursquareRestaurant *restaurant = [self.visibleRestaurants objectAtIndex:indexPath.row];
+    cell.restaurantName.text = restaurant.name;
+    cell.addressLabel.text = restaurant.shortAddress;
+    [cell.starRatingView convertNumberToStars:restaurant.rating];
+    cell.categoryLabel.text = [NSString stringWithFormat:@"%@", restaurant.category];
+    cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2fmi", restaurant.distance.doubleValue];
+    cell.priceLabel.text = [NSString stringWithFormat:@"$%0.2f", restaurant.individualAvgPrice.doubleValue];
+
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 70.0;
+    return 105.0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -141,7 +362,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.restaurantSet.count;
+    return self.visibleRestaurants.count;
 }
 
 @end

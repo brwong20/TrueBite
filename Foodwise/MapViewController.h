@@ -10,6 +10,7 @@
 
 @interface MapViewController : UIViewController
 
+@property (strong, nonatomic) NSMutableArray *restaurantLocations;
 
 @end
 
