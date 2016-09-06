@@ -18,8 +18,13 @@
 
 @interface SpecificMapView : UIView
 
+@property (nonatomic, strong) GMSMapView *mapView;
+@property (nonatomic, strong) UIButton *navigationButton;
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+
 @property (weak, nonatomic)id<SpecificMapViewDelegate>delegate;
 
-- (void)animateToLocation:(NSNumber*)latitude longitude:(NSNumber*)longitude;
+- (void)pinLocation:(CLLocationCoordinate2D)locationCoordinate;
+- (void)animateToLocation:(CLLocationCoordinate2D)locationCoordinate;
 
 @end

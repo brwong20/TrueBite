@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 #import "FoursquareRestaurant.h"
-#import "PriceRestaurant.h"
 
 @interface RestaurantDetailViewController : UIViewController
 

@@ -9,7 +9,6 @@
 
 #import "RestaurantDetailViewController.h"
 #import "PriceUpdateController.h"
-#import "PriceRestaurant.h"
 #import "RestaurantDetailViewCell.h"
 #import "HoursTableViewCell.h"
 #import "RestaurantInfoTableViewCell.h"
@@ -31,7 +30,7 @@
 @property (strong, nonatomic)FIRDatabaseReference *restaurantRef;
 @property (assign, nonatomic)FIRDatabaseHandle priceHandle;
 @property (strong, nonatomic)RestaurantDataSource *restaurantDataSource;
-@property (strong, nonatomic)SpecificMapView *mapView;
+@property (strong, nonatomic)SpecificMapView *restaurantMapView;
 
 @property (strong, nonatomic)NSString *openNow;
 @property (strong, nonatomic)NSString *hoursOfOperation;
@@ -59,11 +58,14 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.mapView = [[SpecificMapView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.45)];
-    self.mapView.delegate = self;
-    [self.mapView animateToLocation:self.selectedRestaurant.latitude longitude:self.selectedRestaurant.longitude];
+    self.restaurantMapView = [[SpecificMapView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.38)];
+    self.restaurantMapView.delegate = self;
+    CLLocationCoordinate2D restaurantCoordinate = CLLocationCoordinate2DMake(self.selectedRestaurant.latitude.floatValue, self.selectedRestaurant.longitude.floatValue);
+    self.restaurantMapView.coordinate = restaurantCoordinate;
+    [self.restaurantMapView pinLocation:restaurantCoordinate];
+    [self.restaurantMapView animateToLocation:restaurantCoordinate];
     
-    self.tableView.tableFooterView = self.mapView;
+    self.tableView.tableFooterView = self.restaurantMapView;
     
     [self.view addSubview:self.tableView];
     
@@ -207,11 +209,15 @@
 
 - (void)mapViewDidClose
 {
+    //Collapse mapView and bring user back to the restaurant's pin
     [UIView animateWithDuration:0.3 animations:^{
-        self.mapView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.45);
-        self.tableView.tableFooterView = self.mapView;
+        self.restaurantMapView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.38);
+        self.restaurantMapView.mapView.frame = CGRectMake(0, CGRectGetMaxY(self.restaurantMapView.navigationButton.frame), self.restaurantMapView.frame.size.width, self.restaurantMapView.frame.size.height - self.restaurantMapView.navigationButton.frame.size.height);
+     
+        //Because our mapView expands outside of the tableFooterView onto the main view, simply set it as the table footer view again to have it in its original position again
+        self.tableView.tableFooterView = self.restaurantMapView;
     }completion:^(BOOL finished) {
-//        [self.mapView animateToLocation:self.selectedRestaurant.latitude longitude:self.selectedRestaurant.longitude];
+        [self.restaurantMapView animateToLocation:self.restaurantMapView.coordinate];
     }];
 }
 
@@ -319,18 +325,21 @@
     else if (indexPath.row == 2)
     {
         HoursTableViewCell *hourCell = [[HoursTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"hourCell"];
-        if (self.selectedRestaurant.openNow) {
+        
+        if ([self.hoursOfOperation isEqualToString:@"Hours currently unavailable"])
+        {
+            hourCell.openNow.text = @"";
+        }
+        else if (self.selectedRestaurant.openNow)
+        {
             hourCell.openNow.textColor = UIColorFromRGB(0x7AD313);
             hourCell.openNow.text = @"Open now";
-        }else{
+        }
+        else
+        {
 #warning Have a better check for 24 hr places since Foursquare sucks
-            if ([self.hoursOfOperation rangeOfString:@"24"].location == NSNotFound ) {
-                hourCell.openNow.textColor = [UIColor redColor];
-                hourCell.openNow.text = @"Closed";
-            }else{
-                hourCell.openNow.textColor = UIColorFromRGB(0x7AD313);
-                hourCell.openNow.text = @"Open Now";
-            }
+            hourCell.openNow.textColor = [UIColor redColor];
+            hourCell.openNow.text = @"Closed";
         }
         [hourCell setTextWithFade:self.hoursOfOperation];
         return hourCell;
