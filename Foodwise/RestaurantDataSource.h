@@ -10,7 +10,9 @@
 
 @interface RestaurantDataSource : NSObject
 
--(void)retrieveNearbyRestaurantsWithLatitude:(NSString *)latitude longitude:(NSString*)longitude
+-(void)retrieveNearbyRestaurantsWithLatitude:(NSString *)latitude
+                                   longitude:(NSString*)longitude
+                                  withRadius:(NSString*)radius
                            completionHandler:(void (^)(id JSON)) completionHandler
                               failureHandler:(void (^)(id error))failureHandler;
 

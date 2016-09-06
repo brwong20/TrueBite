@@ -14,11 +14,13 @@
 
 @implementation RestaurantDataSource
 
-- (void)retrieveNearbyRestaurantsWithLatitude:(NSString *)latitude longitude:(NSString*)longitude
+- (void)retrieveNearbyRestaurantsWithLatitude:(NSString *)latitude
+                                    longitude:(NSString*)longitude
+                                   withRadius:(NSString *)radius
                            completionHandler:(void (^)(id JSON))completionHandler
                               failureHandler:(void (^)(id error))failureHandler;
 {
-    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@&client_secret=%@&v=%@&ll=%@,%@&radius=%@&price=%@&section=%@&venuePhotos=1&limit=50", FOURSQUARE_EXPLORE_BASE_URL, FOURSQUARE_API_KEY, FOURSQUARE_API_SECRET, @"20160820",latitude, longitude, @"2000", @"1", @"food"];
+    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@&client_secret=%@&v=%@&ll=%@,%@&radius=%@&price=%@&section=%@&venuePhotos=1&limit=50", FOURSQUARE_EXPLORE_BASE_URL, FOURSQUARE_API_KEY, FOURSQUARE_API_SECRET, @"20160820",latitude, longitude, radius, @"1", @"food"];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     //manager.session.configuration.URLCache = [NSURLCache sharedURLCache];

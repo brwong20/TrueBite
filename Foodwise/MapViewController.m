@@ -20,7 +20,6 @@
 #import "RestaurantListViewController.h"
 #import "LoginViewController.h"
 #import "FoursquareRestaurant.h"
-#import "PriceRestaurant.h"
 #import "SearchViewController.h"
 #import "LayoutBounds.h"
 #import "UIFont+Extension.h"
@@ -43,6 +42,7 @@
 @property (nonatomic, strong) UIView *infoContainerView;
 @property (nonatomic, strong) UILabel *restaurantName;
 @property (nonatomic, strong) UILabel *addressLabel;
+@property (nonatomic, strong) UILabel *moreDetailsLabel;
 
 @end
 
@@ -65,7 +65,7 @@
     self.restaurantSet = [[NSMutableSet alloc]initWithArray:self.restaurantLocations];
     
     GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.locationManager.currentLocation.coordinate zoom:14.0];
-    self.mapView = [GMSMapView mapWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) camera:cameraPosition];
+    self.mapView = [GMSMapView mapWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height- 64.0) camera:cameraPosition];
     self.mapView.delegate = self;
     self.mapView.myLocationEnabled = YES;
     //self.mapView.settings.myLocationButton = YES;
@@ -98,7 +98,7 @@
 - (UIView*)mapView:(GMSMapView *)mapView markerInfoContents:(GMSMarker *)marker
 {
     
-    self.infoContainerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width * 0.6, self.view.frame.size.height * 0.12)];
+    self.infoContainerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width * 0.6, self.view.frame.size.height * 0.11)];
     self.infoContainerView.backgroundColor = [UIColor clearColor];
 
     self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.28)];
@@ -110,13 +110,21 @@
 
     [self.infoContainerView addSubview:self.restaurantName];
     
-    self.addressLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.restaurantName.frame), self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.68)];
+    self.addressLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.restaurantName.frame), self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.5)];
     self.addressLabel.numberOfLines = 0;
     self.addressLabel.text = marker.snippet;
     self.addressLabel.textColor = [UIColor lightGrayColor];
-    self.addressLabel.font = [UIFont fontWithSize:18.0];
+    self.addressLabel.font = [UIFont fontWithSize:16.0];
     self.addressLabel.backgroundColor = [UIColor clearColor];
     [self.infoContainerView addSubview:self.addressLabel];
+    
+    self.moreDetailsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, self.infoContainerView.frame.size.height - self.infoContainerView.frame.size.height * 0.22, self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.25)];
+    self.moreDetailsLabel.backgroundColor = [UIColor clearColor];
+    self.moreDetailsLabel.textColor = APPLICATION_BLUE_COLOR;
+    self.moreDetailsLabel.font = [UIFont fontWithSize:16.0];
+    self.moreDetailsLabel.text = @"(Tap for more info)";
+    self.moreDetailsLabel.textAlignment = NSTextAlignmentCenter;
+    [self.infoContainerView addSubview:self.moreDetailsLabel];
     
     //[LayoutBounds drawBoundsForAllLayers:self.infoContainerView];
     
@@ -164,7 +172,10 @@
     NSString *scrolledLat = [[NSNumber numberWithDouble:self.currentPosition.latitude]stringValue];
     NSString *scrolledLon = [[NSNumber numberWithDouble:self.currentPosition.longitude]stringValue];
     
-    [self.foodDataSource retrieveNearbyRestaurantsWithLatitude:scrolledLat longitude:scrolledLon completionHandler:^(id JSON) {
+    [self.foodDataSource retrieveNearbyRestaurantsWithLatitude:scrolledLat
+                                                     longitude:scrolledLon
+                                                    withRadius:[@(MILE_RADIUS) stringValue]
+                                             completionHandler:^(id JSON) {
         NSArray *groups = JSON[@"response"][@"groups"];
         NSDictionary *groupsData = [groups objectAtIndex:0];
         NSArray *restArray = [groupsData valueForKey:@"items"];

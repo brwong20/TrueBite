@@ -57,7 +57,6 @@
 @property (nonatomic, strong) UILabel *updatedPriceLabel;
 @property (nonatomic, strong) UILabel *dollarLabel;
 
-
 @end
 
 @implementation PriceUpdateController
@@ -260,7 +259,21 @@
     NSString *reversedString = [self reverseString:self.priceField.text];
     NSNumber *priceToSubmit = [NSNumber numberWithDouble:(reversedString.doubleValue/100)];//We have to divide by 10 since we're always taking the price value in as a 4 digit value!
     
-    [self doubleCheckPrice:priceToSubmit];
+    //CHECK IF USER IS CONNECTED TO SERVER. IF NOT, NO COMPLETION BLOCKS ARE CALLED.....
+    FIRDatabaseReference *connectedRef = [[FIRDatabase database] referenceWithPath:@".info/connected"];
+    [connectedRef observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot *snapshot) {
+        if([snapshot.value boolValue]){
+            [self doubleCheckPrice:priceToSubmit];
+        }else{
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Oops..." message:@"There was a problem trying to submit your price. Please check your connection and try again!" preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [alert dismissViewControllerAnimated:YES completion:nil];
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
+    
+    //[self doubleCheckPrice:priceToSubmit];
 }
 
 - (void)submitPrice
@@ -274,49 +287,36 @@
     //With this, only one price can be submitted OR updated by a single user!
     NSString *currentUserID = [[[FIRAuth auth]currentUser]uid];
     NSDictionary *newPrice = @{currentUserID:priceToSubmit};
+
+#warning For some reason, Firebase sometimes doesn't perform a callback when a child is updated and needs multiple calls..
+    [[[self.restaurantRef child:self.selectedRestaurant.restaurantId]child:@"individualPrices"]updateChildValues:newPrice];
     
-    //CHECK IF USER IS CONNECTED TO SERVER. IF NOT, NO COMPLETION BLOCKS ARE CALLED.....
-    FIRDatabaseReference *connectedRef = [[FIRDatabase database] referenceWithPath:@".info/connected"];
-    [connectedRef observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot *snapshot) {
-        if([snapshot.value boolValue]) {
-            [[[self.restaurantRef child:self.selectedRestaurant.restaurantId]child:@"individualPrices"]updateChildValues:newPrice withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
-                if (!error) {
-                    //Get new prices/update average locally and remotely.
-                self.priceHandle = [ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-                        NSDictionary *newPrices = snapshot.value;
-                        
-                        //Refresh prices and recalculate average to keep data as realtime as possible!
-                        [self.selectedRestaurant.individualPrices removeAllObjects];
-                        [self.selectedRestaurant.individualPrices addObjectsFromArray:[newPrices allValues]];
-                        [self.selectedRestaurant calculateAveragePrice];
-                        
-                        NSDictionary *newAvgPrice = @{@"individualAvgPrice":self.selectedRestaurant.individualAvgPrice};
-                        [[self.restaurantRef child:self.selectedRestaurant.restaurantId]updateChildValues:newAvgPrice withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                self.submitButton.userInteractionEnabled = YES;
-                                //If we came into this method from the double check view.
-                                if (self.highPriceView.superview) {
-                                    [self.highPriceView removeFromSuperview];
-                                }
-                                
-                                if (self.searchFlow) {
-                                    [self showPriceUpdate:oldPrice toNewPrice:self.selectedRestaurant.individualAvgPrice];
-                                }else{
-                                    [self exitPriceUpdater];
-                                }
-                            });
-                        }];
-                    }];
+    //Get new prices/update average locally and remotely.
+    [[[self.restaurantRef child:self.selectedRestaurant.restaurantId]child:@"individualPrices"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        NSDictionary *newPrices = snapshot.value;
+        //Refresh prices and recalculate average to keep data as realtime as possible!
+        [self.selectedRestaurant.individualPrices removeAllObjects];
+        [self.selectedRestaurant.individualPrices addObjectsFromArray:[newPrices allValues]];
+        [self.selectedRestaurant calculateAveragePrice];
+        
+        NSDictionary *newAvgPrice = @{@"individualAvgPrice":self.selectedRestaurant.individualAvgPrice};
+        [[self.restaurantRef child:self.selectedRestaurant.restaurantId]updateChildValues:newAvgPrice];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //self.submitButton.userInteractionEnabled = YES;
+                
+                //If we came into this method from the double check view.
+                if (self.highPriceView.superview)
+                    [self.highPriceView removeFromSuperview];
+                
+                if (self.searchFlow) {
+                    [self showPriceUpdate:oldPrice toNewPrice:self.selectedRestaurant.individualAvgPrice];
+                }else{
+                    [self exitPriceUpdater];
                 }
-            }];
-        } else {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Oops..." message:@"There was a problem connecting you to the servers to submit your price. Please check your wi-fi or internet connection!" preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [alert dismissViewControllerAnimated:YES completion:nil];
-                self.submitButton.userInteractionEnabled = YES;
-            }]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
+            });
+        //}];
     }];
 }
 
