@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0043FB7ECDE03308B09BCF17 /* libPods-TrueBite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AE22C332FFAE902C40343F /* libPods-TrueBite.a */; };
-		A0019FCA1D6FC5D20074F80D /* PriceRestaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = A0019FC91D6FC5D20074F80D /* PriceRestaurant.m */; };
 		A0019FCD1D6FD4DB0074F80D /* PriceUpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0019FCC1D6FD4DB0074F80D /* PriceUpdateController.m */; };
 		A0019FD11D714D290074F80D /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0019FD01D714D290074F80D /* SearchViewController.m */; };
 		A02439471D72AFA900BA4017 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A02439461D72AFA900BA4017 /* MBProgressHUD.m */; };
@@ -47,7 +46,6 @@
 		A0BCBD9D1D6940AA00C9ED04 /* RestaurantTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD9C1D6940AA00C9ED04 /* RestaurantTableViewCell.m */; };
 		A0BCBDA01D6A4A5400C9ED04 /* FoursquareRestaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD9F1D6A4A5400C9ED04 /* FoursquareRestaurant.m */; };
 		A0BCBDA31D6A6C0F00C9ED04 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBDA21D6A6C0F00C9ED04 /* LoginViewController.m */; };
-		A0BCBDA61D6A6C2200C9ED04 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBDA51D6A6C2200C9ED04 /* User.m */; };
 		A0BF221F1D6ACEE70024148A /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221B1D6ACEE70024148A /* Bolts.framework */; };
 		A0BF22201D6ACEE70024148A /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221C1D6ACEE70024148A /* FBSDKCoreKit.framework */; };
 		A0BF22211D6ACEE80024148A /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BF221D1D6ACEE70024148A /* FBSDKLoginKit.framework */; };
@@ -58,8 +56,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A0019FC81D6FC5D20074F80D /* PriceRestaurant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PriceRestaurant.h; sourceTree = "<group>"; };
-		A0019FC91D6FC5D20074F80D /* PriceRestaurant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PriceRestaurant.m; sourceTree = "<group>"; };
 		A0019FCB1D6FD4DB0074F80D /* PriceUpdateController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PriceUpdateController.h; sourceTree = "<group>"; };
 		A0019FCC1D6FD4DB0074F80D /* PriceUpdateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PriceUpdateController.m; sourceTree = "<group>"; };
 		A0019FCF1D714D290074F80D /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
@@ -124,8 +120,6 @@
 		A0BCBD9F1D6A4A5400C9ED04 /* FoursquareRestaurant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoursquareRestaurant.m; sourceTree = "<group>"; };
 		A0BCBDA11D6A6C0F00C9ED04 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		A0BCBDA21D6A6C0F00C9ED04 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		A0BCBDA41D6A6C2200C9ED04 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
-		A0BCBDA51D6A6C2200C9ED04 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		A0BF221B1D6ACEE70024148A /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Foodwise/Frameworks/Bolts.framework; sourceTree = "<group>"; };
 		A0BF221C1D6ACEE70024148A /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Foodwise/Frameworks/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A0BF221D1D6ACEE70024148A /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Foodwise/Frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
@@ -291,12 +285,8 @@
 		A0BCBD831D67C47B00C9ED04 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A0BCBDA41D6A6C2200C9ED04 /* User.h */,
-				A0BCBDA51D6A6C2200C9ED04 /* User.m */,
 				A0BCBD9E1D6A4A5400C9ED04 /* FoursquareRestaurant.h */,
 				A0BCBD9F1D6A4A5400C9ED04 /* FoursquareRestaurant.m */,
-				A0019FC81D6FC5D20074F80D /* PriceRestaurant.h */,
-				A0019FC91D6FC5D20074F80D /* PriceRestaurant.m */,
 				A0BCBD801D67C47200C9ED04 /* RestaurantDataSource.h */,
 				A0BCBD811D67C47200C9ED04 /* RestaurantDataSource.m */,
 				A0BCBD951D67CCB000C9ED04 /* LocationManager.h */,
@@ -489,7 +479,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0019FCD1D6FD4DB0074F80D /* PriceUpdateController.m in Sources */,
-				A0BCBDA61D6A6C2200C9ED04 /* User.m in Sources */,
 				A0BCBDA01D6A4A5400C9ED04 /* FoursquareRestaurant.m in Sources */,
 				A03D3B3A1D77FA10008455F1 /* AppDescriptionView.m in Sources */,
 				A06158821D67BB36005C7C74 /* MapViewController.m in Sources */,
@@ -497,7 +486,6 @@
 				A024395F1D7684BD00BA4017 /* StarRatingView.m in Sources */,
 				A02439571D76758100BA4017 /* LocationPromptView.m in Sources */,
 				A0BF22301D6D01C60024148A /* RestaurantDetailViewController.m in Sources */,
-				A0019FCA1D6FC5D20074F80D /* PriceRestaurant.m in Sources */,
 				A02439511D73CE0700BA4017 /* SpecificMapView.m in Sources */,
 				A02439621D776EF900BA4017 /* WKWebViewController.m in Sources */,
 				A0019FD11D714D290074F80D /* SearchViewController.m in Sources */,
