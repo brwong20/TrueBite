@@ -223,10 +223,10 @@ int i = 0;
         }
         
 #pragma Need at least one restaurant in db... Find a fix for this. Also what if we want to add a new key to our db? Have to do something like this as well
-        for (FoursquareRestaurant *restaurant in self.restaurantSet) {
-            //Update/Save restaurants by their id into db.
-            [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
-        }
+//        for (FoursquareRestaurant *restaurant in self.restaurantSet) {
+//            //Update/Save restaurants by their id into db.
+//            [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
+//        }
         
         //Retrieve all restaurants stored in our db so we can get our price data if we have any.
         [[self.dbRef child:@"restaurants"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
