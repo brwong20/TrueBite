@@ -71,7 +71,7 @@ int i = 0;
     self.refreshControl = [[UIRefreshControl alloc]init];
     self.refreshControl.backgroundColor = [UIColor whiteColor];
     self.refreshControl.tintColor = APPLICATION_BLUE_COLOR;
-    [self.refreshControl addTarget:self action:@selector(updateRestaurants) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(refreshRestaurants) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     [self.tableView registerClass:[RestaurantTableViewCell class] forCellReuseIdentifier:@"cell"];
     
@@ -170,11 +170,15 @@ int i = 0;
 
 #pragma mark Restaurant Data Methods
 
-- (void)updateRestaurants
+- (void)refreshRestaurants
 {
     //Simply update the location using the manager since the delegate method below will get called when a location is retrieved!
     if (self.locationManager.authorizedStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
         [self.locationManager startUpdatingLocation];
+        
+        //Need to disable because we can't pull more restaurants WHILE we're updating the location/refreshing or else we'll have duplicate entries as of now. This is because we remove everything in our restaurant set on every refresh, but not when we load more!
+        self.loadMoreButton.enabled = NO;
+        self.loadMoreButton.alpha = 0.4;
     }else{
         UIAlertController *locationAlert = [UIAlertController alertControllerWithTitle:@"Oops..." message:@"Looks like you haven't enabled location services yet. Please go to Settings to do so!" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -212,7 +216,6 @@ int i = 0;
         
         //Remove and refresh all restuarants every time user pulls to refresh.
         [self.restaurantSet removeAllObjects];
-        [self.visibleRestaurants removeAllObjects];
         
         for (NSDictionary *restaurantInfo in restaurantArray) {
             FoursquareRestaurant *restaurant = [[FoursquareRestaurant alloc]initWithDictionary:restaurantInfo];
@@ -241,7 +244,13 @@ int i = 0;
                         [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
                     }
                 }
-                //After filtering and gathering price data on all restaurants, convert our set to an array to be used with our tableview!
+                
+                /*
+                After filtering and gathering price data on all restaurants, convert our set to an array to be used with our tableview!
+                Also, for some reason, this block gets called multiple times if user reloads/refreshes data multiple times so always make sure to flush and refresh table view dataset RIGHT BEFORE we populate and/or update it
+                */
+                
+                [self.visibleRestaurants removeAllObjects];
                 [self.visibleRestaurants addObjectsFromArray:[self.restaurantSet allObjects]];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -249,9 +258,8 @@ int i = 0;
                     [self sortWithFilter:@"distance"];
                     [self.tableView reloadData];
                 
-//                    if (self.loadingView.superview) {
-//                        [self.loadingView removeFromSuperview];
-//                    }
+                    self.loadMoreButton.enabled = YES;
+                    self.loadMoreButton.alpha = 1.0;
                     
                     //Only when user pulls to refresh
                     if (self.refreshControl.refreshing) {
@@ -263,14 +271,17 @@ int i = 0;
     } failureHandler:^(id error) {
         NSLog(@"Error retrieving restaurants: %@", error);
         
+        self.loadMoreButton.enabled = YES;
+        self.loadMoreButton.alpha = 1.0;
+        
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Oops..." message:@"There was a problem trying to retrieve nearby restaurants. Please check your connection and try again!" preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [alert dismissViewControllerAnimated:YES completion:nil];
         }]];
-        
-        if (self.loadingView.superview) {
-            [self.loadingView removeFromSuperview];
-        }
+               
+//        if (self.loadingView.superview) {
+//            [self.loadingView removeFromSuperview];
+//        }
     }];
 }
 
