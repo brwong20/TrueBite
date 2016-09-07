@@ -1,2 +1,2 @@
-# Foodwise
-Affordable food app that utilizes Foursquare's API!
+# TrueBite
+Affordable food app that utilizes Foursquare's API as well as Google Maps!
