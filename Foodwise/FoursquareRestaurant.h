@@ -16,7 +16,7 @@
 @property (strong, nonatomic) NSString *shortAddress;
 @property (strong, nonatomic) NSString *formattedAddress;
 @property (strong, nonatomic) NSString *formattedPhoneNumber;
-@property (strong, nonatomic) NSString *imageURL;
+@property (strong, nonatomic) NSString *featuredImageURL;
 @property (strong, nonatomic) NSString *category;
 @property (strong, nonatomic) NSString *shortCategory;
 @property (strong, nonatomic) NSString *menuURL;

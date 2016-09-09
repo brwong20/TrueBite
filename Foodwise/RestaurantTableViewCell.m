@@ -20,7 +20,15 @@
     if (self) {
         CGRect cellFrame = self.frame;
         
-        self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(10.0, 7.0, cellFrame.size.width * 0.78, 25.0)];
+        self.featuredImage = [[UIImageView alloc]initWithFrame:CGRectMake(7.0, 17.5, 70.0, 70.0)];
+        self.featuredImage.backgroundColor = [UIColor clearColor];
+        self.featuredImage.layer.cornerRadius = 35.0;
+        self.featuredImage.layer.borderWidth = 1.5;
+        self.featuredImage.layer.borderColor = APPLICATION_FONT_COLOR.CGColor;
+        self.featuredImage.clipsToBounds = YES;
+        [self.contentView addSubview:self.featuredImage];
+        
+        self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.featuredImage.frame) + 5.0, 7.0, cellFrame.size.width * 0.78, 25.0)];
         self.restaurantName.font = [UIFont semiboldFontWithSize:18.0];
         self.restaurantName.textColor = APPLICATION_FONT_COLOR;
         self.restaurantName.backgroundColor = [UIColor clearColor];
@@ -40,21 +48,21 @@
         self.priceLabel.font = [UIFont semiboldFontWithSize:20.0];
         [self.contentView addSubview:self.priceLabel];
         
-        self.categoryLabel = [[UILabel alloc]initWithFrame:CGRectMake(10.0, CGRectGetMaxY(self.restaurantName.frame) + 1.0, APPLICATION_FRAME.size.width * 0.7, 20.0)];
+        self.categoryLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.featuredImage.frame) + 5.0, CGRectGetMaxY(self.restaurantName.frame) + 1.0, APPLICATION_FRAME.size.width * 0.7, 20.0)];
         self.categoryLabel.textColor = [UIColor grayColor];
         self.categoryLabel.font = [UIFont semiboldFontWithSize:14.0];
         self.categoryLabel.textAlignment = NSTextAlignmentLeft;
         self.categoryLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.categoryLabel];
         
-        self.addressLabel = [[UILabel alloc]initWithFrame:CGRectMake(10.0, CGRectGetMaxY(self.categoryLabel.frame), APPLICATION_FRAME.size.width * 0.7, 20.0)];
+        self.addressLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.featuredImage.frame) + 5.0, CGRectGetMaxY(self.categoryLabel.frame), APPLICATION_FRAME.size.width * 0.7, 20.0)];
         self.addressLabel.font = [UIFont fontWithSize:14.0];
         self.addressLabel.textColor = [UIColor grayColor];
         self.addressLabel.backgroundColor = [UIColor clearColor];
         self.addressLabel.textAlignment = NSTextAlignmentLeft;
         [self.contentView addSubview:self.addressLabel];
         
-        self.starRatingView = [[StarRatingView alloc]initWithFrame:CGRectMake(10.0, CGRectGetMaxY(self.addressLabel.frame) + cellFrame.size.height * 0.07, APPLICATION_FRAME.size.width * 0.31, APPLICATION_FRAME.size.height * 0.03)];
+        self.starRatingView = [[StarRatingView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.featuredImage.frame) + 5.0, CGRectGetMaxY(self.addressLabel.frame) + cellFrame.size.height * 0.07, APPLICATION_FRAME.size.width * 0.31, APPLICATION_FRAME.size.height * 0.03)];
         [self.contentView addSubview:self.starRatingView];
         
         //[LayoutBounds drawBoundsForAllLayers:self];
