@@ -451,6 +451,7 @@ int i = 0;
         cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2fmi", restaurant.distance.doubleValue];
         cell.priceLabel.text = [NSString stringWithFormat:@"$%0.2f", restaurant.individualAvgPrice.doubleValue];
         [cell.starRatingView convertNumberToStars:restaurant.rating];
+        [cell.featuredImage setImageWithURL:[NSURL URLWithString:restaurant.featuredImageURL]placeholderImage:[UIImage new]];
     }
 
     return cell;

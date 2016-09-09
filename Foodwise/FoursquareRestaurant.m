@@ -7,6 +7,7 @@
 //
 
 #import "FoursquareRestaurant.h"
+#import "FoodwiseDefines.h"
 
 @implementation FoursquareRestaurant
 
@@ -30,7 +31,8 @@
     NSNumber *priceTier= dictionary[@"venue"][@"price"][@"tier"];
     NSNumber *distance = dictionary[@"venue"][@"location"][@"distance"];
 
-    //NSString *imageURL = dictionary[@"venue"]
+    //Photo URLs are composed of 3 things: a prefix, suffix, and size (width x height)
+    NSArray *featuredPhotos = dictionary[@"venue"][@"featuredPhotos"][@"items"];
     
     self.individualPrices = [[NSMutableArray alloc]init];
     self.groupPrices = [[NSMutableArray alloc]init];
@@ -148,6 +150,20 @@
         self.openNow = NO;
     }
     
+    if (featuredPhotos && [featuredPhotos isKindOfClass:[NSArray class]] && featuredPhotos.count > 0)
+    {
+        NSDictionary *photoDict = [featuredPhotos firstObject];
+        NSString *prefix = photoDict[@"prefix"];
+        NSString *suffix = photoDict[@"suffix"];
+            
+        self.featuredImageURL = [NSString stringWithFormat:@"%@%@%@", prefix, SMALL_PHOTO_SIZE, suffix];
+        
+    }
+    else
+    {
+        self.featuredImageURL = @"";
+    }
+
     return self;
 }
 
@@ -180,7 +196,6 @@
     {
         self.shortAddress = @"";
     }
-    
     return self;
 }
 
@@ -301,7 +316,7 @@
 
 - (NSDictionary *)fireBaseDictionary
 {
-    NSDictionary *restaurantDict = @{@"name":self.name, @"address":self.shortAddress, @"formattedAddress":self.formattedAddress, @"longitude": self.longitude, @"latitude": self.latitude, @"formattedPhoneNumber":self.formattedPhoneNumber, @"rating":self.rating, @"priceRating":self.priceTier, @"category":self.category, @"shortCategory":self.shortCategory, @"menuUrl":self.menuURL} ;
+    NSDictionary *restaurantDict = @{@"name":self.name, @"address":self.shortAddress, @"formattedAddress":self.formattedAddress, @"longitude": self.longitude, @"latitude": self.latitude, @"formattedPhoneNumber":self.formattedPhoneNumber, @"rating":self.rating, @"priceRating":self.priceTier, @"category":self.category, @"shortCategory":self.shortCategory, @"menuUrl":self.menuURL, @"featuredPhoto": self.featuredImageURL} ;
     
     return restaurantDict;
 }

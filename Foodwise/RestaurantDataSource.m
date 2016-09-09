@@ -33,11 +33,11 @@
 
 }
 
-- (void)getRestaurantDetailsFor:(NSString*)restauarantId
+- (void)getRestaurantDetailsFor:(NSString*)restaurantId
             completionHandler:(void (^)(id JSON))completionHandler
                failureHandler:(void (^)(id error))failureHandler
 {
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@?client_id=%@&client_secret=%@&v=%@", FOURSQUARE_VENUE_DETAILS_BASE_URL, restauarantId, FOURSQUARE_API_KEY, FOURSQUARE_API_SECRET, @"20160820"];
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@?client_id=%@&client_secret=%@&v=%@", FOURSQUARE_VENUE_DETAILS_BASE_URL, restaurantId, FOURSQUARE_API_KEY, FOURSQUARE_API_SECRET, @"20160820"];
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -48,19 +48,19 @@
 
 }
 
-//- (void)getHoursForRestaurant:(NSString *)restauarantId
-//            completionHandler:(void (^)(id))completionHandler
-//               failureHandler:(void (^)(id))failureHandler
-//{
-//    NSString *urlString = [NSString stringWithFormat:@"https://api.foursquare.com/v2/venues/%@/hours?client_id=%@&client_secret=%@&v=%@", restauarantId, FOURSQUARE_API_KEY, FOURSQUARE_API_SECRET, @"20160820"];
-//    
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    [manager GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        completionHandler(responseObject);
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        failureHandler(error);
-//    }];
-//}
+- (void)getPhotosForRestaurant:(NSString*)restaurantId
+             completionHandler:(void (^)(id JSON))completionHandler
+                failureHandler:(void (^)(id error))failureHandler
+{
+    NSString *urlString = [NSString stringWithFormat:@"https://api.foursquare.com/v2/venues/%@/photos/?client_id=%@&client_secret=%@&v=%@", restaurantId, FOURSQUARE_API_KEY, FOURSQUARE_API_SECRET, @"20160820"];
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        completionHandler(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        failureHandler(error);
+    }];
+}
 
 - (void)autoCompleteWithQuery:(NSString*)query withLatitude:(NSString*)latitude andLogitude:(NSString*)longitude
             completionHandler:(void (^)(id JSON))completionHandler

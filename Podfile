@@ -7,4 +7,6 @@ pod 'Firebase'
 pod 'Firebase/Auth'
 pod 'GoogleSignIn'
 pod 'Firebase/Database'
+pod 'MWPhotoBrowser'
+pod 'Firebase/Storage'
 end
