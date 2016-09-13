@@ -8,6 +8,8 @@
 
 #import "FIRDatabaseManager.h"
 
+#import "UIImage+ResizeHelper.h"
+
 @interface FIRDatabaseManager()
 
 @property (nonatomic, strong) FIRDatabaseReference *restaurantsRef;
@@ -70,10 +72,9 @@
 
     //failureHandler(newPrice);
 }
-                       
 
 - (void)uploadPhotoForRestaurant:(FoursquareRestaurant *)restaurant
-                 photoData:(NSData *)data
+                 photo:(UIImage *)photo
          completionHandler:(void (^)(id metadata))completionHandler
             failureHandler:(void (^)(id error))failureHandler
 {
@@ -81,26 +82,44 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"MM/dd/yyyy"];
     NSString *dateString = [formatter stringFromDate:today];
+    [formatter setDateFormat:@"yyyyMMddHHmmss"];
+    NSString *dateKey = [formatter stringFromDate:today];
     
-    //Unique file identifier for now...
-    [formatter setDateFormat:@"mmddyyyyHHmmss"];
-    NSString *fileDateStr = [formatter stringFromDate:today];
+    NSUUID *uuid = [[NSUUID alloc]init];
+    NSString *folderID = uuid.UUIDString;
+    NSString *thumbId = [NSString stringWithFormat:@"%@-thumb", uuid.UUIDString];
+    NSString *originalId = [NSString stringWithFormat:@"%@-original", uuid.UUIDString];
     
     FIRStorageMetadata *metaData = [[FIRStorageMetadata alloc]init];
+
     metaData.customMetadata = @{@"userId":self.currentUser.uid, @"restaurantName":restaurant.name, @"restaurantId":restaurant.restaurantId, @"priceTier":restaurant.priceTier, @"date":dateString};
     
-    [[[self.storageRef child:restaurant.restaurantId]child:fileDateStr] putData:data metadata:metaData completion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
+    UIImage *thumbImage = [UIImage imageWithImage:photo scaledToFillSize:CGSizeMake(150, 150)];
+    NSData *thumbData = UIImageJPEGRepresentation(thumbImage, 0.7);
+    
+    [[[[self.storageRef child:restaurant.restaurantId]child:folderID]child:thumbId]putData:thumbData metadata:nil completion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
+        
+        [[[self.restaurantsRef child:restaurant.restaurantId]child:@"thumbnails"]updateChildValues:@{dateKey:metadata.downloadURL.absoluteString}];
+        
+    }];
+    
+    NSData *imgData = UIImageJPEGRepresentation(photo, 1.0);
+    
+    [[[[self.storageRef child:restaurant.restaurantId]child:folderID]child:originalId ] putData:imgData metadata:metaData completion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
         if (error) {
             failureHandler(error);
             return;
         }
-        [[self.restaurantsRef child:restaurant.restaurantId]updateChildValues:@{@"photos":metadata.downloadURL.absoluteString, @"pricePhoto":@0}];
-        completionHandler(metadata);
+        
+        //Since we store all these files in folders, store their urls into our restaurant objects for easy retrieval.
+        //ALSO, we HAVE to store these two key pieces of info in order to retrieve the photo and its metadata (metadata needs full path, but it's just restaurantId/fileDateStr, but we omit restaurantId since it's redundant.
+        [[[self.restaurantsRef child:restaurant.restaurantId]child:@"userPhotos"]updateChildValues:@{dateKey:metadata.downloadURL.absoluteString}];
+        completionHandler(metaData);
     }];
 }
 
 - (void)uploadPricedPhotoForRestaurant:(FoursquareRestaurant *)restaurant
-                             photoData:(NSData *)data
+                             photo:(UIImage *)photo
                                  price:(NSNumber *)price
                      completionHandler:(void (^)(id))completionHandler
                         failureHandler:(void (^)(id))failureHandler
@@ -109,17 +128,31 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"MM/dd/yyyy"];
     NSString *dateString = [formatter stringFromDate:today];
+    [formatter setDateFormat:@"yyyyMMddHHmmss"];
+    NSString *dateKey = [formatter stringFromDate:today];
     
-    //Unique file identifier for now...
-    [formatter setDateFormat:@"mmddyyyyHHmmss"];
-    NSString *fileDateStr = [formatter stringFromDate:today];
+    NSUUID *uuid = [[NSUUID alloc]init];
+    NSString *folderID = uuid.UUIDString;
+    NSString *thumbId = [NSString stringWithFormat:@"%@-thumb", uuid.UUIDString];
+    NSString *originalId = [NSString stringWithFormat:@"%@-original", uuid.UUIDString];
     
     FIRStorageMetadata *metaData = [[FIRStorageMetadata alloc]init];
-    
-    //Remember to check for photo filter!!!
+    FIRStorageMetadata *thumbnailMetadata = [[FIRStorageMetadata alloc]init];
+    thumbnailMetadata.customMetadata = @{@"price":price};
     metaData.customMetadata = @{@"userId":self.currentUser.uid, @"restaurantName":restaurant.name, @"restaurantId":restaurant.restaurantId, @"priceTier":restaurant.priceTier, @"date":dateString, @"price":price};
 
-    [[[self.storageRef child:restaurant.restaurantId]child:fileDateStr]putData:data metadata:metaData completion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
+    UIImage *thumbImage = [UIImage imageWithImage:photo scaledToFillSize:CGSizeMake(150, 150)];
+    NSData *thumbData = UIImageJPEGRepresentation(thumbImage, 0.7);
+    
+    [[[[self.storageRef child:restaurant.restaurantId]child:folderID]child:thumbId]putData:thumbData metadata:nil completion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
+        
+         [[[self.restaurantsRef child:restaurant.restaurantId]child:@"thumbnails"]updateChildValues:@{dateKey:metadata.downloadURL.absoluteString}];
+        
+    }];
+    
+    NSData *imgData = UIImageJPEGRepresentation(photo, 1.0);
+    
+    [[[[self.storageRef child:restaurant.restaurantId]child:folderID]child:originalId ] putData:imgData metadata:metaData completion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
         if (error) {
             failureHandler(error);
             return;
@@ -127,35 +160,72 @@
         
         //Since we store all these files in folders, store their urls into our restaurant objects for easy retrieval.
         //ALSO, we HAVE to store these two key pieces of info in order to retrieve the photo and its metadata (metadata needs full path, but it's just restaurantId/fileDateStr, but we omit restaurantId since it's redundant.
-        [[[self.restaurantsRef child:restaurant.restaurantId]child:@"photos"]updateChildValues:@{fileDateStr:metadata.downloadURL.absoluteString}];
+        [[[self.restaurantsRef child:restaurant.restaurantId]child:@"userPhotos"]updateChildValues:@{dateKey:metadata.downloadURL.absoluteString}];
         
         [self updateAverageForRestaurant:restaurant withNewPrice:price completionHandler:^(id newAverage) {
             NSLog(@"UPDATED");
-             completionHandler(metadata);
+            completionHandler(metadata);
         } failureHandler:^(id error) {
             
         }];
     }];
 }
 
-- (void)retrievePhotosForRestaurant:(FoursquareRestaurant *)restaurant
-                  completionHandler:(void (^)(id))completionHandler
-                     failureHandler:(void (^)(id))failureHandler
+- (void)retrieveThumbnailsForRestaurant:(FoursquareRestaurant *)restaurant
+                      completionHandler:(void (^)(id photos))completionHandler
+                         failureHandler:(void (^)(id error))failureHandler
 {
-    [[[self.restaurantsRef child:restaurant.restaurantId]child:@"photos"] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-        //completionHandler(snapshot.value);
+    [[[[self.restaurantsRef child:restaurant.restaurantId]child:@"thumbnails"]queryOrderedByKey]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        completionHandler(snapshot.value);
         
-        NSDictionary *allPhotos = snapshot.value;
+        //        NSDictionary *allPhotos = snapshot.value;
+        //
+        //        NSLog(@"%@", allPhotos);
+        //
+        //        //This is how we get the metadata for all photos
+        //        if ([allPhotos isKindOfClass:[NSDictionary class]]) {
+        //            NSArray *fileExtensions = [allPhotos allKeys];
+        //            NSMutableArray *photoInfo = [NSMutableArray array];
+        //            for (NSString *extension in fileExtensions) {
+        //                NSString *filePath = [NSString stringWithFormat:@"%@/%@", restaurant.restaurantId, extension];
+        //                [[self.storageRef child:filePath]metadataWithCompletion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
+        //                    if (metadata) {
+        //                        [photoInfo addObject:metadata];
+        //                    }
+        //                }];
+        //            }
+        //            completionHandler(photoInfo);
+        //        }
+    }];
+ 
+}
 
-        //This is how we get the metadata for all photos
-        NSArray *fileExtensions = [allPhotos allKeys];
-        for (NSString *extension in fileExtensions) {
-            NSString *filePath = [NSString stringWithFormat:@"%@/%@", restaurant.restaurantId, extension];
-            [[self.storageRef child:filePath]metadataWithCompletion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
-                NSLog(@"%@", metadata);
-            }];
-        }
+
+- (void)retrieveUserPhotosForRestaurant:(FoursquareRestaurant *)restaurant
+                  completionHandler:(void (^)(id photos))completionHandler
+                     failureHandler:(void (^)(id error))failureHandler
+{
+    [[[self.restaurantsRef child:restaurant.restaurantId]child:@"userPhotos"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        completionHandler(snapshot.value);
         
+//        NSDictionary *allPhotos = snapshot.value;
+//        
+//        NSLog(@"%@", allPhotos);
+//        
+//        //This is how we get the metadata for all photos
+//        if ([allPhotos isKindOfClass:[NSDictionary class]]) {
+//            NSArray *fileExtensions = [allPhotos allKeys];
+//            NSMutableArray *photoInfo = [NSMutableArray array];
+//            for (NSString *extension in fileExtensions) {
+//                NSString *filePath = [NSString stringWithFormat:@"%@/%@", restaurant.restaurantId, extension];
+//                [[self.storageRef child:filePath]metadataWithCompletion:^(FIRStorageMetadata * _Nullable metadata, NSError * _Nullable error) {
+//                    if (metadata) {
+//                        [photoInfo addObject:metadata];
+//                    }
+//                }];
+//            }
+//            completionHandler(photoInfo);
+//        }
     }];
 }
 

@@ -9,4 +9,5 @@ pod 'GoogleSignIn'
 pod 'Firebase/Database'
 pod 'MWPhotoBrowser'
 pod 'Firebase/Storage'
+pod 'Toast', '~> 3.0'
 end

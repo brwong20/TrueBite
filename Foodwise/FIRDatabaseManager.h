@@ -23,20 +23,26 @@
               completionHandler:(void (^)(id newAverage)) completionHandler
                  failureHandler:(void (^)(id error))failureHandler;
 
+//Uploads original photo as well as a thumbnail
 - (void)uploadPhotoForRestaurant:(FoursquareRestaurant *)restaurant
-                 photoData:(NSData *)data
+                 photo:(UIImage *)photo
          completionHandler:(void (^)(id metadata)) completionHandler
             failureHandler:(void (^)(id error))failureHandler;
 
+//Uploads original photo as well as a thumbnail including a price
 - (void)uploadPricedPhotoForRestaurant:(FoursquareRestaurant *)restaurant
-                       photoData:(NSData *)data
+                       photo:(UIImage *)photo
                         price:(NSNumber *)price
                completionHandler:(void (^)(id metadata)) completionHandler
                   failureHandler:(void (^)(id error))failureHandler;
 
+- (void)retrieveThumbnailsForRestaurant:(FoursquareRestaurant *)restaurant
+                      completionHandler:(void (^)(id photos))completionHandler
+                         failureHandler:(void (^)(id error))failureHandler;
+
 //Just retrieve all the URLs for a restaurant! - Might even want to create a new dictionary of price photos in a restauraunt object for simple structure
-- (void)retrievePhotosForRestaurant:(FoursquareRestaurant *)restaurant
-                  completionHandler:(void (^)(id metadata)) completionHandler
+- (void)retrieveUserPhotosForRestaurant:(FoursquareRestaurant *)restaurant
+                  completionHandler:(void (^)(id photos)) completionHandler
                      failureHandler:(void (^)(id error))failureHandler;
 
 @end

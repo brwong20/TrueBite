@@ -20,9 +20,11 @@
 #import "WKWebViewController.h"
 #import "LocationManager.h"
 #import "LayoutBounds.h"
+#import "MealCameraController.h"
 #import "TabledCollectionCell.h"
 #import "ImageCollectionCell.h"
 #import "MWPhotoBrowser.h"
+#import "FIRDatabaseManager.h"
 
 #import <FirebaseAuth/FirebaseAuth.h>
 #import <FirebaseDatabase/FirebaseDatabase.h>
@@ -32,19 +34,20 @@
 #import <UIImageView+AFNetworking.h>
 
 
+
 @interface RestaurantDetailViewController ()<UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, RestaurantDetailCellDelegate, SpecificMapViewDelegate, MWPhotoBrowserDelegate>
 
-@property (strong, nonatomic) FIRDatabaseReference *restaurantRef;
 @property (assign, nonatomic) FIRDatabaseHandle priceHandle;
 @property (strong, nonatomic) RestaurantDataSource *restaurantDataSource;
 @property (strong, nonatomic) SpecificMapView *restaurantMapView;
+@property (strong, nonatomic) FIRDatabaseManager *dbManager;
 
 @property (strong, nonatomic) NSString *hoursOfOperation;
 @property (strong, nonatomic) NSString *tags;
 @property (strong, nonatomic) NSNumber *reviewCount;
 
-@property (nonatomic, strong) NSMutableArray *smallRestaurantPhotos;//Only for our cell's collection view
-@property (nonatomic, strong) NSMutableArray *originalRestaurantPhotos;
+@property (nonatomic, strong) NSMutableArray *userPhotos;
+@property (nonatomic, strong) NSMutableArray *thumbnailPhotos;//Only for our cell's collection view
 
 @property (nonatomic, strong) NSMutableDictionary *contentOffsetDictionary;
 
@@ -60,15 +63,15 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"back_arrow"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(exitDetailView)];
     self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"TrueBite"]];
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    self.restaurantRef = [[[FIRDatabase database]reference]child:@"restaurants"];
+
     self.restaurantDataSource = [[RestaurantDataSource alloc]init];
+    self.dbManager = [FIRDatabaseManager sharedManager];
     
     self.tableView = [[UITableView alloc]initWithFrame:self.view.frame style:UITableViewStylePlain];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.restaurantMapView = [[SpecificMapView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.38)];
+    self.restaurantMapView = [[SpecificMapView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.3)];
     self.restaurantMapView.delegate = self;
     CLLocationCoordinate2D restaurantCoordinate = CLLocationCoordinate2DMake(self.selectedRestaurant.latitude.floatValue, self.selectedRestaurant.longitude.floatValue);
     self.restaurantMapView.coordinate = restaurantCoordinate;
@@ -81,8 +84,8 @@
     
     self.contentOffsetDictionary = [NSMutableDictionary dictionary];
     
-    self.smallRestaurantPhotos = [[NSMutableArray alloc]init];
-    self.originalRestaurantPhotos = [[NSMutableArray alloc]init];
+    self.thumbnailPhotos = [[NSMutableArray alloc]init];
+    self.userPhotos = [[NSMutableArray alloc]init];
     
 #pragma ONLY pull this data once on viewDidLoad for now since it doesnt change often
     //Detailed restaurant data (hours, openNow, etc.) is a bitch to parse, doesn't change oftern, and isn't vital anywhere anywhere else so just retrieve everytime we go into this view.
@@ -162,14 +165,71 @@
             [alert dismissViewControllerAnimated:YES completion:nil];
         }]];
     }];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    //Since we modify a POINTER to a Restaurant object in the PriceUpdater, we just need to update the tableView to reflect the price change
-    [self.tableView reloadData];
+    //Retrieve most recent photos and their thumbnails here
+    
+    //Listen for specific changes with Firebase observer rather than refresh like this...
+    [self.thumbnailPhotos removeAllObjects];
+    [self.userPhotos removeAllObjects];
+    
+    [self.dbManager retrieveThumbnailsForRestaurant:self.selectedRestaurant completionHandler:^(id photos) {
+       if ([photos isKindOfClass:[NSDictionary class]]) {
+            NSArray *sortedKeys = [[photos allKeys] sortedArrayUsingSelector:@selector(compare:)];//Sort by photos by their timestamp.
+            NSArray *newestArray = [[sortedKeys reverseObjectEnumerator]allObjects];//Newest first...
+            for (NSString *key in newestArray) {
+                [self.thumbnailPhotos addObject:[photos objectForKey:key]];
+            }
+       }
+    } failureHandler:^(id error) {
+        
+    }];
+    
+    [self.dbManager retrieveUserPhotosForRestaurant:self.selectedRestaurant completionHandler:^(id photos) {
+        if ([photos isKindOfClass:[NSDictionary class]]) {
+            NSArray *sortedKeys = [[photos allKeys] sortedArrayUsingSelector:@selector(compare:)];//Sort by photos by their timestamp.
+            NSArray *newestArray = [[sortedKeys reverseObjectEnumerator]allObjects];//Newest first...
+            for (NSString *key in newestArray) {
+                [self.userPhotos addObject:[photos objectForKey:key]];
+            }
+        }
+    } failureHandler:^(id error) {
+        
+    }];
+    
+    [self.restaurantDataSource getPhotosForRestaurant:self.selectedRestaurant.restaurantId completionHandler:^(id JSON) {
+        NSArray *photos = JSON[@"response"][@"photos"][@"items"];
+        
+        //NSLog(@"%@", photos);
+        
+        if (photos.count > 0)
+        {
+            //If there aren't any new photos or if this method is called multiple times, this prevents dupes from being added.
+            for (NSDictionary *photoDict in photos)
+            {
+                NSString *prefix = photoDict[@"prefix"];
+                NSString *suffix = photoDict[@"suffix"];
+                NSString *smallPhotoURL = [NSString stringWithFormat:@"%@%@%@", prefix, HQ_SMALL_PHOTO_SIZE, suffix];
+                NSString *originalPhotoURL = [NSString stringWithFormat:@"%@%@%@", prefix, ORIGINAL_PHOTO_SIZE, suffix];
+                
+                [self.thumbnailPhotos addObject:smallPhotoURL];
+                [self.userPhotos addObject:originalPhotoURL];
+            }
+        }
+        
+        //Reload either way since we might have photos from our database!
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //NOTE: Since we modify a POINTER to a FoursqureRestaurant object in the PriceUpdater, we just need to update the tableView to reflect the price change!
+            [self.tableView reloadData];
+        });
+    } failureHandler:^(id error) {
+        NSLog(@"Unable to retrieve photos");
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -224,9 +284,10 @@
 
 - (void)mapViewDidClose
 {
+#warning Need to account for when user scrolls down on table view. Also find a better way to do this overall with all the sizing
     //Collapse mapView and bring user back to the restaurant's pin
     [UIView animateWithDuration:0.3 animations:^{
-        self.restaurantMapView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.38);
+        self.restaurantMapView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.3);
         self.restaurantMapView.mapView.frame = CGRectMake(0, CGRectGetMaxY(self.restaurantMapView.navigationButton.frame), self.restaurantMapView.frame.size.width, self.restaurantMapView.frame.size.height - self.restaurantMapView.navigationButton.frame.size.height);
      
         //Because our mapView expands outside of the tableFooterView onto the main view, simply set it as the table footer view again to have it in its original position again
@@ -256,7 +317,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return 6;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -295,13 +356,13 @@
     {
         //Dynamically calculate cell size based on what the address looks like
         if (self.selectedRestaurant.formattedAddress && ![self.selectedRestaurant.formattedAddress isEqualToString:@""]) {
-            CGSize maxCellSize = CGSizeMake(self.view.frame.size.width, 110.0);
+            CGSize maxCellSize = CGSizeMake(self.view.frame.size.width, 70.0);
             NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
             paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
             CGRect hoursLabelSize = [self.selectedRestaurant.formattedAddress boundingRectWithSize:maxCellSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                                         attributes:@{NSFontAttributeName:[UIFont fontWithSize:16.0], NSParagraphStyleAttributeName: paragraphStyle.copy}
                                                                                            context:nil];
-            return hoursLabelSize.size.height + 62.0;//Don't forget to account for title & rest of cell!
+            return hoursLabelSize.size.height + 45.0;//Don't forget to account for title & rest of cell!
         }else{
             return 55.0;
         }
@@ -310,13 +371,9 @@
     {
         return 110.0;
     }
-    else if(indexPath.row == 6)
-    {
-        return 46.0;
-    }
     else
     {
-        return 0;
+        return 44;
     }
 }
 
@@ -437,40 +494,6 @@
         
         CGFloat horizontalOffset = [self.contentOffsetDictionary[[@(index) stringValue]]floatValue];
         [photoCell.collectionView setContentOffset:CGPointMake(horizontalOffset, 0)];
-        
-#warning Retrieve photos and reload here for now to keep it clean and simple :-). Eventually want to refactor and put this somewhere else and get ref to this cell bc this can be called multiple times
-        [self.restaurantDataSource getPhotosForRestaurant:self.selectedRestaurant.restaurantId completionHandler:^(id JSON) {
-            NSArray *photos = JSON[@"response"][@"photos"][@"items"];
-            
-            //NSLog(@"%@", photos);
-            
-            if (photos.count > 0)
-            {
-                //If there aren't any new photos or if this method is called multiple times, this prevents dupes from being added.
-                if (photos.count != self.smallRestaurantPhotos.count) {
-                    for (NSDictionary *photoDict in photos)
-                    {
-                        NSString *prefix = photoDict[@"prefix"];
-                        NSString *suffix = photoDict[@"suffix"];
-                        NSString *smallPhotoURL = [NSString stringWithFormat:@"%@%@%@", prefix, HQ_SMALL_PHOTO_SIZE, suffix];
-                        NSString *originalPhotoURL = [NSString stringWithFormat:@"%@%@%@", prefix, ORIGINAL_PHOTO_SIZE, suffix];
-                        
-                        [self.smallRestaurantPhotos addObject:smallPhotoURL];
-                        [self.originalRestaurantPhotos addObject:originalPhotoURL];
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        //Only reload our photo cell
-                        [photoCell.collectionView reloadData];
-                    });
-                }
-                
-            }
-            
-        } failureHandler:^(id error) {
-            NSLog(@"Unable to retrieve photos");
-        }];
-
     }
 }
 
@@ -478,49 +501,89 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.smallRestaurantPhotos.count;
+    return self.thumbnailPhotos.count + 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //Make sure to register the cell type you want to use in the TabledCollectionCell subclass!
+    
+    if (indexPath.row == 0) {
+        UICollectionViewCell *addPhotoCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"addPhotoCell" forIndexPath:indexPath];
 
-    ImageCollectionCell *cell = (ImageCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:collectionCellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor lightGrayColor];
-    
-    NSURL *photoURL = [NSURL URLWithString:self.smallRestaurantPhotos[indexPath.row]];
-    [cell.imageView setImageWithURL:photoURL placeholderImage:[UIImage new]];
-    
-    return cell;
+        UILabel *plus = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, 60, 60)];
+        plus.text = @"+";
+        plus.font = [UIFont semiboldFontWithSize:65.0];
+        plus.textColor = APPLICATION_FONT_COLOR;
+        plus.textAlignment = NSTextAlignmentCenter;
+        [addPhotoCell.contentView addSubview:plus];
+        
+        UILabel *addLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 65, 90, 30)];
+        addLabel.text = @"Add Photo";
+        addLabel.textColor = APPLICATION_FONT_COLOR;
+        addLabel.textAlignment = NSTextAlignmentCenter;
+        addLabel.font = [UIFont mediumFontWithSize:15.0];
+        addLabel.backgroundColor = [UIColor clearColor];
+        [addPhotoCell.contentView addSubview:addLabel];
+        
+        return addPhotoCell;
+    }else{
+        ImageCollectionCell *cell = (ImageCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:collectionCellIdentifier forIndexPath:indexPath];
+        
+        cell.backgroundColor = [UIColor lightGrayColor];
+
+        NSString *photoUrlString = self.thumbnailPhotos[indexPath.row - 1];
+        NSURL *photoURL = [NSURL URLWithString:photoUrlString];
+        
+        [cell.imageView setImageWithURL:photoURL placeholderImage:[UIImage new]];
+        
+        return cell;
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //Retrieve and convert all photos here so we don't have to load them while in the photo browser!
-    NSMutableArray *photos = [NSMutableArray array];
     
-    for (NSString *photoUrlString in self.originalRestaurantPhotos) {
-        NSURL *photoURL = [[NSURL alloc]initWithString:photoUrlString];
-        MWPhoto *photo = [MWPhoto photoWithURL:photoURL];
-        [photos addObject:photo];
+    
+    if (indexPath.row == 0)
+    {
+        MealCameraController *cameraView = [[MealCameraController alloc]init];
+        cameraView.selectedRestaurant = self.selectedRestaurant;
+        
+        //Present pushed view controller modally
+        CATransition* transition = [CATransition animation];
+        transition.duration = 0.3f;
+        transition.type = kCATransitionMoveIn;
+        transition.subtype = kCATransitionFromTop;
+        [self.navigationController.view.layer addAnimation:transition
+                                                    forKey:kCATransition];
+        [self.navigationController pushViewController:cameraView animated:NO];
+    }
+    else
+    {
+        NSMutableArray *photos = [NSMutableArray array];
+        
+        for (NSString *photoUrlString in self.userPhotos) {
+            NSURL *photoURL = [[NSURL alloc]initWithString:photoUrlString];
+            MWPhoto *photo = [MWPhoto photoWithURL:photoURL];
+            [photos addObject:photo];
+        }
+        
+        MWPhotoBrowser *photoBrowser = [[MWPhotoBrowser alloc]initWithPhotos:photos];
+        photoBrowser.delegate = self;
+        photoBrowser.displayActionButton = YES;
+        photoBrowser.zoomPhotosToFill = YES;
+        
+        [photoBrowser setCurrentPhotoIndex:indexPath.row - 1];
+        [self.navigationController pushViewController:photoBrowser animated:YES];
     }
     
-    MWPhotoBrowser *photoBrowser = [[MWPhotoBrowser alloc]initWithPhotos:photos];
-    
-    photoBrowser.delegate = self;
-    photoBrowser.displayActionButton = YES;
-    photoBrowser.zoomPhotosToFill = YES;
-    //photoBrowser.enableGrid = YES;
-    
-    [photoBrowser setCurrentPhotoIndex:indexPath.row];
-    //[photoBrowser startOnGrid];
-    
-    [self.navigationController pushViewController:photoBrowser animated:YES];
 }
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser
 {
-    return self.originalRestaurantPhotos.count;
+    return self.userPhotos.count;
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -535,6 +598,5 @@
     NSInteger index = collectionView.indexPath.row;
     self.contentOffsetDictionary[[@(index) stringValue]] = @(horizontalOffset);
 }
-
 
 @end

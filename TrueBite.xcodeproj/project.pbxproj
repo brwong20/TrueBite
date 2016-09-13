@@ -13,6 +13,7 @@
 		A018A8191D7FC82800FAECFE /* TabledCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A018A8181D7FC82800FAECFE /* TabledCollectionCell.m */; };
 		A018A81C1D7FCE4000FAECFE /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A018A81B1D7FCE4000FAECFE /* ImageCollectionCell.m */; };
 		A018A8271D82925200FAECFE /* FIRDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A018A8261D82925200FAECFE /* FIRDatabaseManager.m */; };
+		A018A82B1D84C34D00FAECFE /* UIImage+ResizeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A018A82A1D84C34D00FAECFE /* UIImage+ResizeHelper.m */; };
 		A024394B1D73A09D00BA4017 /* HoursTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A024394A1D73A09D00BA4017 /* HoursTableViewCell.m */; };
 		A024394E1D73B4EC00BA4017 /* RestaurantInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A024394D1D73B4EC00BA4017 /* RestaurantInfoTableViewCell.m */; };
 		A02439511D73CE0700BA4017 /* SpecificMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02439501D73CE0700BA4017 /* SpecificMapView.m */; };
@@ -71,6 +72,8 @@
 		A018A81B1D7FCE4000FAECFE /* ImageCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionCell.m; sourceTree = "<group>"; };
 		A018A8251D82925200FAECFE /* FIRDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FIRDatabaseManager.h; sourceTree = "<group>"; };
 		A018A8261D82925200FAECFE /* FIRDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FIRDatabaseManager.m; sourceTree = "<group>"; };
+		A018A8291D84C34D00FAECFE /* UIImage+ResizeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ResizeHelper.h"; sourceTree = "<group>"; };
+		A018A82A1D84C34D00FAECFE /* UIImage+ResizeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ResizeHelper.m"; sourceTree = "<group>"; };
 		A02439451D72AFA900BA4017 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = "../../../../Downloads/MBProgressHUD-master/MBProgressHUD.h"; sourceTree = "<group>"; };
 		A02439461D72AFA900BA4017 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = "../../../../Downloads/MBProgressHUD-master/MBProgressHUD.m"; sourceTree = "<group>"; };
 		A02439491D73A09D00BA4017 /* HoursTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoursTableViewCell.h; sourceTree = "<group>"; };
@@ -235,7 +238,7 @@
 		A061586E1D67BB36005C7C74 = {
 			isa = PBXGroup;
 			children = (
-				A06158791D67BB36005C7C74 /* Foodwise */,
+				A06158791D67BB36005C7C74 /* TrueBite */,
 				A06158781D67BB36005C7C74 /* Products */,
 				DA16B302DFB147F45FA043F7 /* Frameworks */,
 				175E363BA9B128F10196FEAC /* Pods */,
@@ -250,7 +253,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A06158791D67BB36005C7C74 /* Foodwise */ = {
+		A06158791D67BB36005C7C74 /* TrueBite */ = {
 			isa = PBXGroup;
 			children = (
 				A0BCBD831D67C47B00C9ED04 /* Model */,
@@ -258,6 +261,7 @@
 				A0BCBD851D67C49200C9ED04 /* View */,
 				A061587A1D67BB36005C7C74 /* Supporting Files */,
 			);
+			name = TrueBite;
 			path = Foodwise;
 			sourceTree = "<group>";
 		};
@@ -297,6 +301,8 @@
 		A093BCCB1D724E52009A8F55 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A018A8291D84C34D00FAECFE /* UIImage+ResizeHelper.h */,
+				A018A82A1D84C34D00FAECFE /* UIImage+ResizeHelper.m */,
 				A02439481D72AFC000BA4017 /* MBProgressHUD */,
 				A093BCC31D724C6D009A8F55 /* Fonts */,
 			);
@@ -538,6 +544,7 @@
 				A02439621D776EF900BA4017 /* WKWebViewController.m in Sources */,
 				A0019FD11D714D290074F80D /* SearchViewController.m in Sources */,
 				A0DE0CF71D7E834D00FC65C8 /* PriceFilterView.m in Sources */,
+				A018A82B1D84C34D00FAECFE /* UIImage+ResizeHelper.m in Sources */,
 				A024394E1D73B4EC00BA4017 /* RestaurantInfoTableViewCell.m in Sources */,
 				A018A8271D82925200FAECFE /* FIRDatabaseManager.m in Sources */,
 				A0BCBD9D1D6940AA00C9ED04 /* RestaurantTableViewCell.m in Sources */,

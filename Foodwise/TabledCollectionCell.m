@@ -21,12 +21,13 @@
     if (!(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) return nil;
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc]init];
-    //flowLayout.sectionInset = UIEdgeInsetsMake(10, 10, 9, 10);
+    flowLayout.sectionInset = UIEdgeInsetsMake(0, 15.0, 0, 2.0);
     flowLayout.itemSize = CGSizeMake(100, 100);
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
     self.collectionView = [[IndexedPhotoCollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:flowLayout];
     [self.collectionView registerClass:[ImageCollectionCell class] forCellWithReuseIdentifier:collectionCellIdentifier];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"addPhotoCell"];
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.showsHorizontalScrollIndicator = NO;
     [self.contentView addSubview:self.collectionView];

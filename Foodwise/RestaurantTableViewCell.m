@@ -23,13 +23,13 @@
         self.featuredImage = [[UIImageView alloc]initWithFrame:CGRectMake(7.0, 17.5, 70.0, 70.0)];
         self.featuredImage.backgroundColor = [UIColor clearColor];
         self.featuredImage.layer.cornerRadius = 35.0;
-        self.featuredImage.layer.borderWidth = 1.5;
+        self.featuredImage.layer.borderWidth = 0.75;
         self.featuredImage.layer.borderColor = APPLICATION_FONT_COLOR.CGColor;
         self.featuredImage.clipsToBounds = YES;
         [self.contentView addSubview:self.featuredImage];
         
         self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.featuredImage.frame) + 5.0, 7.0, cellFrame.size.width * 0.78, 25.0)];
-        self.restaurantName.font = [UIFont semiboldFontWithSize:18.0];
+        self.restaurantName.font = [UIFont semiboldFontWithSize:17.0];
         self.restaurantName.textColor = APPLICATION_FONT_COLOR;
         self.restaurantName.backgroundColor = [UIColor clearColor];
         self.restaurantName.textAlignment = NSTextAlignmentLeft;

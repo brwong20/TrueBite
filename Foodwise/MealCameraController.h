@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "FoursquareRestaurant.h"
+
 @interface MealCameraController : UIViewController
+
+@property (nonatomic, strong) FoursquareRestaurant *selectedRestaurant;
 
 @end
