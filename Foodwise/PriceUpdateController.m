@@ -12,11 +12,14 @@
 #import "MBProgressHUD.h"
 #import "UIFont+Extension.h"
 #import "RestaurantDataSource.h"
+#import "FIRDatabaseManager.h"
 
 #import <Firebase.h>
 #import <FirebaseDatabase/FirebaseDatabase.h>
 
 @interface PriceUpdateController() <UITextFieldDelegate>
+
+@property (nonatomic, strong) FIRDatabaseManager *dbManager;
 
 @property (nonatomic, strong) RestaurantDataSource *restaurantDataSource;
 @property (nonatomic, strong) FIRDatabaseReference *restaurantRef;
@@ -73,6 +76,7 @@
         
     }
     self.restaurantRef = [[[FIRDatabase database]reference]child:@"restaurants"];
+    self.dbManager = [FIRDatabaseManager sharedManager];
     
     CGRect viewRect = self.view.frame;
     self.priceContainer = [[UIView alloc]initWithFrame:CGRectMake(viewRect.size.width/2 - viewRect.size.width * 0.375, viewRect.size.height * 0.02, viewRect.size.width * 0.75, viewRect.size.height * 0.16)];
@@ -283,40 +287,24 @@
     //Before anything, we must reverse the string since we make the user input them in reverse order
     NSString *reversedString = [self reverseString:self.priceField.text];
     NSNumber *priceToSubmit = [NSNumber numberWithDouble:(reversedString.doubleValue/100)];//We have to divide by 10 since we're always taking the price value in as a 4 digit value!
-    
-    //With this, only one price can be submitted OR updated by a single user!
-    NSString *currentUserID = [[[FIRAuth auth]currentUser]uid];
-    NSDictionary *newPrice = @{currentUserID:priceToSubmit};
 
 #warning For some reason, Firebase sometimes doesn't perform a callback when a child is updated and needs multiple calls..
-    [[[self.restaurantRef child:self.selectedRestaurant.restaurantId]child:@"individualPrices"]updateChildValues:newPrice];
-    
-    //Get new prices/update average locally and remotely.
-    [[[self.restaurantRef child:self.selectedRestaurant.restaurantId]child:@"individualPrices"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-        
-        NSDictionary *newPrices = snapshot.value;
-        //Refresh prices and recalculate average to keep data as realtime as possible!
-        [self.selectedRestaurant.individualPrices removeAllObjects];
-        [self.selectedRestaurant.individualPrices addObjectsFromArray:[newPrices allValues]];
-        [self.selectedRestaurant calculateAveragePrice];
-        
-        NSDictionary *newAvgPrice = @{@"individualAvgPrice":self.selectedRestaurant.individualAvgPrice};
-        [[self.restaurantRef child:self.selectedRestaurant.restaurantId]updateChildValues:newAvgPrice];
+    [self.dbManager updateAverageForRestaurant:self.selectedRestaurant withNewPrice:priceToSubmit completionHandler:^(id newAverage) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //self.submitButton.userInteractionEnabled = YES;
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //self.submitButton.userInteractionEnabled = YES;
-                
-                //If we came into this method from the double check view.
-                if (self.highPriceView.superview)
-                    [self.highPriceView removeFromSuperview];
-                
-                if (self.searchFlow) {
-                    [self showPriceUpdate:oldPrice toNewPrice:self.selectedRestaurant.individualAvgPrice];
-                }else{
-                    [self exitPriceUpdater];
-                }
-            });
-        //}];
+            //If we came into this method from the double check view.
+            if (self.highPriceView.superview)
+                [self.highPriceView removeFromSuperview];
+            
+            if (self.searchFlow) {
+                [self showPriceUpdate:oldPrice toNewPrice:self.selectedRestaurant.individualAvgPrice];
+            }else{
+                [self exitPriceUpdater];
+            }
+        });
+    } failureHandler:^(id error) {
+        NSLog(@"ERROR UPDATING PRICE");
     }];
 }
 

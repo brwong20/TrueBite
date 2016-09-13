@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+#import "FoursquareRestaurant.h"
+
 @interface AssetSendViewController : UIViewController
+
+@property (nonatomic, strong) FoursquareRestaurant *selectedRestaurant;
+@property (nonatomic, strong) UIImage *selectedImage;
 
 @end
