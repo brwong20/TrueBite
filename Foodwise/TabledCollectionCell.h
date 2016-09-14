@@ -16,6 +16,7 @@
 @end
 
 static NSString *collectionCellIdentifier = @"photoCollectionCell";
+static NSString *addPhotoCellIdentifier = @"addPhotoCell";
 
 @interface TabledCollectionCell : UITableViewCell
 

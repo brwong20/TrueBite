@@ -25,6 +25,7 @@
 #import "ImageCollectionCell.h"
 #import "MWPhotoBrowser.h"
 #import "FIRDatabaseManager.h"
+#import "AddPhotoCollectionViewcell.h"
 
 #import <FirebaseAuth/FirebaseAuth.h>
 #import <FirebaseDatabase/FirebaseDatabase.h>
@@ -507,25 +508,8 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //Make sure to register the cell type you want to use in the TabledCollectionCell subclass!
-    
     if (indexPath.row == 0) {
-        UICollectionViewCell *addPhotoCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"addPhotoCell" forIndexPath:indexPath];
-
-        UILabel *plus = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, 60, 60)];
-        plus.text = @"+";
-        plus.font = [UIFont semiboldFontWithSize:65.0];
-        plus.textColor = APPLICATION_FONT_COLOR;
-        plus.textAlignment = NSTextAlignmentCenter;
-        [addPhotoCell.contentView addSubview:plus];
-        
-        UILabel *addLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 65, 90, 30)];
-        addLabel.text = @"Add Photo";
-        addLabel.textColor = APPLICATION_FONT_COLOR;
-        addLabel.textAlignment = NSTextAlignmentCenter;
-        addLabel.font = [UIFont mediumFontWithSize:15.0];
-        addLabel.backgroundColor = [UIColor clearColor];
-        [addPhotoCell.contentView addSubview:addLabel];
-        
+        AddPhotoCollectionViewCell *addPhotoCell = [collectionView dequeueReusableCellWithReuseIdentifier:addPhotoCellIdentifier forIndexPath:indexPath];
         return addPhotoCell;
     }else{
         ImageCollectionCell *cell = (ImageCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:collectionCellIdentifier forIndexPath:indexPath];

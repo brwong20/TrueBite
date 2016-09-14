@@ -113,13 +113,15 @@
         restaurant = [self.nearbyRestaurants objectAtIndex:indexPath.row];
     }
     
+    [cell setIndentationLevel:1];
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     cell.textLabel.font = [UIFont semiboldFontWithSize:16.0];
     cell.textLabel.textColor = APPLICATION_FONT_COLOR;
     
-    cell.detailTextLabel.font = [UIFont fontWithSize:14.0];
+    cell.detailTextLabel.font = [UIFont fontWithSize:16.0];
     cell.detailTextLabel.textColor = [UIColor lightGrayColor];
     
     cell.textLabel.text = restaurant.name;
@@ -130,7 +132,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 50.0;
+    return 60.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

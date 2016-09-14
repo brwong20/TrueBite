@@ -21,6 +21,8 @@
 		A024395A1D767F6100BA4017 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02439591D767F6100BA4017 /* LoadingView.m */; };
 		A024395F1D7684BD00BA4017 /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A024395E1D7684BD00BA4017 /* StarRatingView.m */; };
 		A02439621D776EF900BA4017 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A02439611D776EF900BA4017 /* WKWebViewController.m */; };
+		A0275BBE1D89C07400D2DE5B /* NSString+IsEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = A0275BBD1D89C07400D2DE5B /* NSString+IsEmpty.m */; };
+		A0275BC11D89C8B300D2DE5B /* AddPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A0275BC01D89C8B300D2DE5B /* AddPhotoCollectionViewCell.m */; };
 		A03D3B371D77F9FF008455F1 /* TitlePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A03D3B361D77F9FF008455F1 /* TitlePageView.m */; };
 		A03D3B3A1D77FA10008455F1 /* AppDescriptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A03D3B391D77FA10008455F1 /* AppDescriptionView.m */; };
 		A03D3B3F1D78C7C4008455F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A03D3B3E1D78C7C4008455F1 /* GoogleService-Info.plist */; };
@@ -74,8 +76,6 @@
 		A018A8261D82925200FAECFE /* FIRDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FIRDatabaseManager.m; sourceTree = "<group>"; };
 		A018A8291D84C34D00FAECFE /* UIImage+ResizeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ResizeHelper.h"; sourceTree = "<group>"; };
 		A018A82A1D84C34D00FAECFE /* UIImage+ResizeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ResizeHelper.m"; sourceTree = "<group>"; };
-		A02439451D72AFA900BA4017 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = "../../../../Downloads/MBProgressHUD-master/MBProgressHUD.h"; sourceTree = "<group>"; };
-		A02439461D72AFA900BA4017 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = "../../../../Downloads/MBProgressHUD-master/MBProgressHUD.m"; sourceTree = "<group>"; };
 		A02439491D73A09D00BA4017 /* HoursTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoursTableViewCell.h; sourceTree = "<group>"; };
 		A024394A1D73A09D00BA4017 /* HoursTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoursTableViewCell.m; sourceTree = "<group>"; };
 		A024394C1D73B4EC00BA4017 /* RestaurantInfoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantInfoTableViewCell.h; sourceTree = "<group>"; };
@@ -90,6 +90,10 @@
 		A024395E1D7684BD00BA4017 /* StarRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingView.m; sourceTree = "<group>"; };
 		A02439601D776EF900BA4017 /* WKWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
 		A02439611D776EF900BA4017 /* WKWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
+		A0275BBC1D89C07400D2DE5B /* NSString+IsEmpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+IsEmpty.h"; sourceTree = "<group>"; };
+		A0275BBD1D89C07400D2DE5B /* NSString+IsEmpty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+IsEmpty.m"; sourceTree = "<group>"; };
+		A0275BBF1D89C8B300D2DE5B /* AddPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddPhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		A0275BC01D89C8B300D2DE5B /* AddPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddPhotoCollectionViewCell.m; sourceTree = "<group>"; };
 		A03D3B351D77F9FF008455F1 /* TitlePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitlePageView.h; sourceTree = "<group>"; };
 		A03D3B361D77F9FF008455F1 /* TitlePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitlePageView.m; sourceTree = "<group>"; };
 		A03D3B381D77FA10008455F1 /* AppDescriptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDescriptionView.h; sourceTree = "<group>"; };
@@ -183,15 +187,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		A02439481D72AFC000BA4017 /* MBProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-				A02439451D72AFA900BA4017 /* MBProgressHUD.h */,
-				A02439461D72AFA900BA4017 /* MBProgressHUD.m */,
-			);
-			name = MBProgressHUD;
-			sourceTree = "<group>";
-		};
 		A024395B1D7680AB00BA4017 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -218,8 +213,6 @@
 				A024394D1D73B4EC00BA4017 /* RestaurantInfoTableViewCell.m */,
 				A018A8171D7FC82800FAECFE /* TabledCollectionCell.h */,
 				A018A8181D7FC82800FAECFE /* TabledCollectionCell.m */,
-				A018A81A1D7FCE4000FAECFE /* ImageCollectionCell.h */,
-				A018A81B1D7FCE4000FAECFE /* ImageCollectionCell.m */,
 			);
 			name = UITableViewCells;
 			sourceTree = "<group>";
@@ -233,6 +226,17 @@
 				A02439611D776EF900BA4017 /* WKWebViewController.m */,
 			);
 			name = "Restaurant Details";
+			sourceTree = "<group>";
+		};
+		A0275BC21D89C8BB00D2DE5B /* UICollectionViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				A018A81A1D7FCE4000FAECFE /* ImageCollectionCell.h */,
+				A018A81B1D7FCE4000FAECFE /* ImageCollectionCell.m */,
+				A0275BBF1D89C8B300D2DE5B /* AddPhotoCollectionViewCell.h */,
+				A0275BC01D89C8B300D2DE5B /* AddPhotoCollectionViewCell.m */,
+			);
+			name = UICollectionViewCells;
 			sourceTree = "<group>";
 		};
 		A061586E1D67BB36005C7C74 = {
@@ -303,7 +307,8 @@
 			children = (
 				A018A8291D84C34D00FAECFE /* UIImage+ResizeHelper.h */,
 				A018A82A1D84C34D00FAECFE /* UIImage+ResizeHelper.m */,
-				A02439481D72AFC000BA4017 /* MBProgressHUD */,
+				A0275BBC1D89C07400D2DE5B /* NSString+IsEmpty.h */,
+				A0275BBD1D89C07400D2DE5B /* NSString+IsEmpty.m */,
 				A093BCC31D724C6D009A8F55 /* Fonts */,
 			);
 			name = Resources;
@@ -348,6 +353,7 @@
 				A02439581D767F6100BA4017 /* LoadingView.h */,
 				A02439591D767F6100BA4017 /* LoadingView.m */,
 				A024395C1D7680C100BA4017 /* UITableViewCells */,
+				A0275BC21D89C8BB00D2DE5B /* UICollectionViewCells */,
 				A024395B1D7680AB00BA4017 /* Onboarding */,
 				A06158831D67BB36005C7C74 /* Main.storyboard */,
 				A06158881D67BB36005C7C74 /* LaunchScreen.storyboard */,
@@ -548,6 +554,7 @@
 				A024394E1D73B4EC00BA4017 /* RestaurantInfoTableViewCell.m in Sources */,
 				A018A8271D82925200FAECFE /* FIRDatabaseManager.m in Sources */,
 				A0BCBD9D1D6940AA00C9ED04 /* RestaurantTableViewCell.m in Sources */,
+				A0275BC11D89C8B300D2DE5B /* AddPhotoCollectionViewCell.m in Sources */,
 				A0BCBD971D67CCB000C9ED04 /* LocationManager.m in Sources */,
 				A093BCBA1D723B96009A8F55 /* UIFont+Extension.m in Sources */,
 				A0BCBDA31D6A6C0F00C9ED04 /* LoginViewController.m in Sources */,
@@ -558,6 +565,7 @@
 				A0BF222D1D6CF6CF0024148A /* LayoutBounds.m in Sources */,
 				A024394B1D73A09D00BA4017 /* HoursTableViewCell.m in Sources */,
 				A0BCBD821D67C47200C9ED04 /* RestaurantDataSource.m in Sources */,
+				A0275BBE1D89C07400D2DE5B /* NSString+IsEmpty.m in Sources */,
 				A024395A1D767F6100BA4017 /* LoadingView.m in Sources */,
 				A061587C1D67BB36005C7C74 /* main.m in Sources */,
 				A018A81C1D7FCE4000FAECFE /* ImageCollectionCell.m in Sources */,
@@ -675,6 +683,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 7VDPHN5N3R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Foodwise",
@@ -697,6 +706,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 7VDPHN5N3R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Foodwise",

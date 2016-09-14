@@ -14,6 +14,7 @@
 #import "RestaurantDataSource.h"
 #import "FIRDatabaseManager.h"
 
+
 #import <Firebase.h>
 #import <FirebaseDatabase/FirebaseDatabase.h>
 
@@ -486,41 +487,53 @@
 #pragma mark - UITextField delegate methods
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    //Since we're dealing with price, the way we input numbers are reversed so it looks better (numbers come in from the right)
     if ([string isEqualToString:@""]) {
+        //Delete numbers from last to first
         switch (range.location) {
             case 0:
                 self.digitFour.text = nil;
                 break;
             case 1:
+                self.digitFour.text = self.digitThree.text;
                 self.digitThree.text = nil;
                 break;
             case 2:
+                self.digitFour.text = self.digitThree.text;
+                self.digitThree.text = self.digitTwo.text;
                 self.digitTwo.text = nil;
                 break;
             case 3:
+                self.digitFour.text = self.digitThree.text;
+                self.digitThree.text = self.digitTwo.text;
+                self.digitTwo.text = self.digitOne.text;
                 self.digitOne.text = nil;
                 break;
             default:
                 break;
         }
-        
         return YES;
     } else if (textField.text.length == 4) {
         return NO;
     } else {
+        //Since we're dealing with price, the way we input numbers are reversed so it looks better (numbers come in from the right)
         switch (range.location) {
             case 0:
                 self.digitFour.text = string;
                 break;
             case 1:
-                self.digitThree.text = string;
+                self.digitThree.text = self.digitFour.text;
+                self.digitFour.text = string;
                 break;
             case 2:
-                self.digitTwo.text = string;
+                self.digitTwo.text = self.digitThree.text;
+                self.digitThree.text = self.digitFour.text;
+                self.digitFour.text = string;
                 break;
             case 3:
-                self.digitOne.text = string;
+                self.digitOne.text = self.digitTwo.text;
+                self.digitTwo.text = self.digitThree.text;
+                self.digitThree.text = self.digitFour.text;
+                self.digitFour.text = string;
                 break;
             default:
                 break;

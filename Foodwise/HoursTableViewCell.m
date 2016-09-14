@@ -22,7 +22,7 @@
     if (self) {
         self.hoursTitle = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 4.0, self.frame.size.width * 0.5, 18.0)];
         self.hoursTitle.textColor = APPLICATION_FONT_COLOR;
-        self.hoursTitle.text = @"Hours Today";
+        self.hoursTitle.text = @"Hours today";
         self.hoursTitle.font = [UIFont semiboldFontWithSize:17.0];
         [self.contentView addSubview:self.hoursTitle];
         
