@@ -124,7 +124,7 @@
         
         NSMutableString *tagString = [[NSMutableString alloc]init];
         if (tags.count == 0 || !tags) {
-            [tagString appendString:@"No tags available"];
+            [tagString appendString:@"Unavailable"];
         }
         else
         {
@@ -325,7 +325,7 @@
 {
     if (indexPath.row == 0)
     {
-        return 135.0;
+        return 115.0;
     }
     else if (indexPath.row == 1)
     {

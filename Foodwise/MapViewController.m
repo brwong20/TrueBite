@@ -23,6 +23,7 @@
 #import "SearchViewController.h"
 #import "LayoutBounds.h"
 #import "UIFont+Extension.h"
+#import "StarRatingView.h"
 
 @interface MapViewController () <LocationManagerDelegate, GMSMapViewDelegate>
 
@@ -41,8 +42,9 @@
 //Custom GMSMarker properties
 @property (nonatomic, strong) UIView *infoContainerView;
 @property (nonatomic, strong) UILabel *restaurantName;
-@property (nonatomic, strong) UILabel *addressLabel;
-@property (nonatomic, strong) UILabel *moreDetailsLabel;
+@property (nonatomic, strong) UILabel *cuisineLabel;
+@property (nonatomic, strong) UIImageView *arrowImage;
+@property (nonatomic, strong) StarRatingView *starView;
 
 @end
 
@@ -58,13 +60,14 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"refresh"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(refreshMap)];
     
     self.locationManager = [LocationManager sharedLocationInstance];
+    self.currentPosition = CLLocationCoordinate2DMake(self.locationManager.currentLocation.coordinate.latitude, self.locationManager.currentLocation.coordinate.longitude);
     
     self.dbRef = [[FIRDatabase database]reference];
     
     self.foodDataSource = [[RestaurantDataSource alloc]init];
-    self.restaurantSet = [[NSMutableSet alloc]initWithArray:self.restaurantLocations];
+    self.restaurantSet = [NSMutableSet set];
     
-    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.locationManager.currentLocation.coordinate zoom:14.0];
+    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.locationManager.currentLocation.coordinate zoom:15.0];
     self.mapView = [GMSMapView mapWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height- 64.0) camera:cameraPosition];
     self.mapView.delegate = self;
     self.mapView.myLocationEnabled = YES;
@@ -85,7 +88,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self populateNearbyRestaurants:self.restaurantLocations];
+    [self refreshMap];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -97,34 +100,36 @@
 #pragma mark GMSMapViewDelegate Methods
 - (UIView*)mapView:(GMSMapView *)mapView markerInfoContents:(GMSMarker *)marker
 {
-    
     self.infoContainerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width * 0.6, self.view.frame.size.height * 0.11)];
     self.infoContainerView.backgroundColor = [UIColor clearColor];
 
-    self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.28)];
+    FoursquareRestaurant *restaurantInfo = (FoursquareRestaurant*)marker.userData;
+    
+    self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.3)];
     self.restaurantName.numberOfLines = 0;
-    self.restaurantName.text = marker.title;
-    self.restaurantName.font = [UIFont semiboldFontWithSize:18.0];
+    self.restaurantName.text = restaurantInfo.name;
+    self.restaurantName.font = [UIFont semiboldFontWithSize:self.infoContainerView.frame.size.height * 0.28];
     self.restaurantName.backgroundColor = [UIColor clearColor];
     self.restaurantName.textColor = APPLICATION_FONT_COLOR;
-
     [self.infoContainerView addSubview:self.restaurantName];
     
-    self.addressLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.restaurantName.frame), self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.5)];
-    self.addressLabel.numberOfLines = 0;
-    self.addressLabel.text = marker.snippet;
-    self.addressLabel.textColor = [UIColor lightGrayColor];
-    self.addressLabel.font = [UIFont fontWithSize:16.0];
-    self.addressLabel.backgroundColor = [UIColor clearColor];
-    [self.infoContainerView addSubview:self.addressLabel];
+    self.cuisineLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.restaurantName.frame) + self.restaurantName.frame.size.height * 0.1, self.infoContainerView.frame.size.width * 0.4, self.infoContainerView.frame.size.height * 0.2)];
+    self.cuisineLabel.numberOfLines = 0;
+    self.cuisineLabel.text = restaurantInfo.shortCategory;
+    self.cuisineLabel.textColor = [UIColor lightGrayColor];
+    self.cuisineLabel.font = [UIFont fontWithSize:15.0];
+    self.cuisineLabel.backgroundColor = [UIColor clearColor];
+    [self.infoContainerView addSubview:self.cuisineLabel];
     
-    self.moreDetailsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, self.infoContainerView.frame.size.height - self.infoContainerView.frame.size.height * 0.22, self.infoContainerView.frame.size.width, self.infoContainerView.frame.size.height * 0.25)];
-    self.moreDetailsLabel.backgroundColor = [UIColor clearColor];
-    self.moreDetailsLabel.textColor = APPLICATION_BLUE_COLOR;
-    self.moreDetailsLabel.font = [UIFont fontWithSize:16.0];
-    self.moreDetailsLabel.text = @"(Tap for more info)";
-    self.moreDetailsLabel.textAlignment = NSTextAlignmentCenter;
-    [self.infoContainerView addSubview:self.moreDetailsLabel];
+    self.starView = [[StarRatingView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.cuisineLabel.frame) + self.infoContainerView.frame.size.height * 0.1, self.infoContainerView.frame.size.width * 0.6, self.infoContainerView.frame.size.height * 0.3)];
+    [self.starView convertNumberToStars:restaurantInfo.rating];
+    [self.infoContainerView addSubview:self.starView];
+    
+    self.arrowImage = [[UIImageView alloc]initWithFrame:CGRectMake(self.infoContainerView.frame.size.width - self.infoContainerView.frame.size.width * 0.1, self.infoContainerView.frame.size.height/2 - self.infoContainerView.frame.size.width * 0.05, self.infoContainerView.frame.size.width * 0.1, self.infoContainerView.frame.size.width * 0.1)];
+    self.arrowImage.backgroundColor = [UIColor clearColor];
+    self.arrowImage.contentMode = UIViewContentModeScaleAspectFit;
+    [self.arrowImage setImage:[UIImage imageNamed:@"back_info.png"]];
+    [self.infoContainerView addSubview:self.arrowImage];
     
     //[LayoutBounds drawBoundsForAllLayers:self.infoContainerView];
     
@@ -145,23 +150,12 @@
 
 - (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker
 {
-    //Find marker's restaurant
-    NSString *restaurantTitle = marker.title;
-    
-    int i = 0;
-    for (FoursquareRestaurant *restaurant in self.restaurantLocations) {
-        if (restaurant.name == restaurantTitle) {
-            break;
-        }else{
-            i++;
-        }
-    }
-    
     RestaurantDetailViewController *detailView = [[RestaurantDetailViewController alloc]init];
-    detailView.selectedRestaurant = self.restaurantLocations[i];
+    detailView.selectedRestaurant = (FoursquareRestaurant*)marker.userData;
     [self.navigationController pushViewController:detailView animated:YES];
 }
 
+//Every time a user shifts the map, update their current location to retrieve nearby restaurants based on the map
 - (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position
 {
     self.currentPosition = CLLocationCoordinate2DMake(position.target.latitude, position.target.longitude);
@@ -183,28 +177,44 @@
         [self.mapView clear];
         [self.restaurantSet removeAllObjects];
         
-        for (NSDictionary *restInfo in restArray) {
-            FoursquareRestaurant *restaurant = [[FoursquareRestaurant alloc]initWithDictionary:restInfo];
-            [self.restaurantSet addObject:restaurant];
-        }
-        
-        [self.restaurantLocations removeAllObjects];
-        [self.restaurantLocations addObjectsFromArray:[self.restaurantSet allObjects]];
-        
-        [self performSelectorOnMainThread:@selector(populateNearbyRestaurants:) withObject:self.restaurantLocations waitUntilDone:YES];
+         for (NSDictionary *restInfo in restArray) {
+             FoursquareRestaurant *restaurant = [[FoursquareRestaurant alloc]initWithDictionary:restInfo];
+             [self.restaurantSet addObject:restaurant];
+         }
+                                                 
+         [[self.dbRef child:@"restaurants"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+             NSDictionary *allRestaurants = snapshot.value;
+             
+             if (allRestaurants.count > 0) {
+                 for (FoursquareRestaurant *restaurant in self.restaurantSet) {
+                     NSDictionary *foundRestaurant = [allRestaurants objectForKey:restaurant.restaurantId];
+                     //If the restaurant isn't in our database, add it as a new node. otherwise it's a restaurant we already have saved so retrieve the relevant price data on it!
+                     if (foundRestaurant) {
+                         [restaurant retrievePriceDataFrom:foundRestaurant];
+                     }else{
+                         [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
+                     }
+                 }
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [self populateNearbyRestaurants:self.restaurantSet];
+             });
+         }];
+
     } failureHandler:^(id error) {
         //
     }];
 }
 
-- (void)populateNearbyRestaurants:(NSMutableArray *)restaurants
+- (void)populateNearbyRestaurants:(NSMutableSet *)restaurants
 {
     for (FoursquareRestaurant *restaurant in restaurants) {
         GMSMarker *marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake([restaurant.latitude doubleValue], [restaurant.longitude doubleValue])];
         marker.icon = [self priceMarkerForRestaurant:restaurant];
-        marker.title = restaurant.name;
-        marker.snippet = restaurant.shortAddress;
-        //marker.userData = restaurant;
+        //marker.title = restaurant.name;
+        //marker.snippet = restaurant.shortAddress;
+        marker.userData = restaurant;
         marker.map = self.mapView;
     }
 }
@@ -255,13 +265,15 @@
     searchView.currentLocation = self.locationManager.currentLocation.coordinate;//Stores a copy of the value at that location in time instead of pointing this value which might change!
 
     //Get 5 restaurants nearby to prepopulate for user
-    NSMutableArray *nearby = [[NSMutableArray alloc]init];
-    if (self.restaurantLocations.count >= 1) {
+    NSMutableArray *nearby = [NSMutableArray array];
+    NSArray *restaurants = self.restaurantSet.allObjects;
+    if (self.restaurantSet.count > 0) {
         for (int i = 0; i < 5; ++i) {
-            [nearby addObject:[self.restaurantLocations objectAtIndex:i]];
+            [nearby addObject:restaurants[i]];
             
         }
     }
+    
     searchView.nearbyRestaurants = nearby;
     [self.navigationController pushViewController:searchView animated:YES];
 }

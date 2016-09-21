@@ -261,8 +261,8 @@
     //self.submitButton.userInteractionEnabled = NO;
     
     //Before anything, we must reverse the string since we make the user input them in reverse order
-    NSString *reversedString = [self reverseString:self.priceField.text];
-    NSNumber *priceToSubmit = [NSNumber numberWithDouble:(reversedString.doubleValue/100)];//We have to divide by 10 since we're always taking the price value in as a 4 digit value!
+    //NSString *reversedString = [self reverseString:self.priceField.text];
+    NSNumber *priceToSubmit = [NSNumber numberWithDouble:(self.priceField.text.doubleValue/100)];//We have to divide by 10 since we're always taking the price value in as a 4 digit value!
     
     //CHECK IF USER IS CONNECTED TO SERVER. IF NOT, NO COMPLETION BLOCKS ARE CALLED.....
     FIRDatabaseReference *connectedRef = [[FIRDatabase database] referenceWithPath:@".info/connected"];
@@ -277,32 +277,26 @@
             [self presentViewController:alert animated:YES completion:nil];
         }
     }];
-    
-    //[self doubleCheckPrice:priceToSubmit];
 }
 
 - (void)submitPrice
 {
     NSNumber *oldPrice = self.selectedRestaurant.individualAvgPrice;
+    NSNumber *newPrice = [NSNumber numberWithDouble:(self.priceField.text.doubleValue/100)];
     
-    //Before anything, we must reverse the string since we make the user input them in reverse order
-    NSString *reversedString = [self reverseString:self.priceField.text];
-    NSNumber *priceToSubmit = [NSNumber numberWithDouble:(reversedString.doubleValue/100)];//We have to divide by 10 since we're always taking the price value in as a 4 digit value!
-
 #warning For some reason, Firebase sometimes doesn't perform a callback when a child is updated and needs multiple calls..
-    [self.dbManager updateAverageForRestaurant:self.selectedRestaurant withNewPrice:priceToSubmit completionHandler:^(id newAverage) {
+    [self.dbManager updateAverageForRestaurant:self.selectedRestaurant withNewPrice:newPrice completionHandler:^(id newAverage) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            //self.submitButton.userInteractionEnabled = YES;
-            
             //If we came into this method from the double check view.
-            if (self.highPriceView.superview)
+            if (self.highPriceView.superview){
                 [self.highPriceView removeFromSuperview];
-            
-            if (self.searchFlow) {
-                [self showPriceUpdate:oldPrice toNewPrice:self.selectedRestaurant.individualAvgPrice];
-            }else{
                 [self exitPriceUpdater];
             }
+            else if (self.searchFlow)
+                [self showPriceUpdate:oldPrice toNewPrice:self.selectedRestaurant.individualAvgPrice];
+            else
+                [self exitPriceUpdater];
+            
         });
     } failureHandler:^(id error) {
         NSLog(@"ERROR UPDATING PRICE");
@@ -425,7 +419,7 @@
     [self.priceChangeContainer addSubview:self.oldPriceLabel];
     
     //Fade up from bottom to replace old price
-    self.updatedPriceLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.dollarLabel.frame), self.priceChangeContainer.frame.size.height, self.priceChangeContainer.frame.size.width * 0.3, APPLICATION_FRAME.size.height * 0.06)];
+    self.updatedPriceLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.dollarLabel.frame), self.priceChangeContainer.frame.size.height * 0.9, self.priceChangeContainer.frame.size.width * 0.3, APPLICATION_FRAME.size.height * 0.06)];
     self.updatedPriceLabel.text = [NSString stringWithFormat:@"%0.2f", newPrice.doubleValue];
     self.updatedPriceLabel.textAlignment = NSTextAlignmentCenter;
     self.updatedPriceLabel.backgroundColor = [UIColor clearColor];
@@ -436,25 +430,25 @@
     
     //[LayoutBounds drawBoundsForAllLayers:self.priceChangeContainer];
     
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.35 animations:^{
         CGRect priceView = self.priceChangeContainer.frame;
         priceView.origin.y = self.view.frame.size.height/2 - self.view.frame.size.height * 0.2;
         self.priceChangeContainer.frame = priceView;
     }completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             CGRect oldLabel = self.oldPriceLabel.frame;
             self.oldPriceLabel.alpha = 0.0;
             oldLabel.origin.y -= 20.0;
             self.oldPriceLabel.frame = oldLabel;
         }completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.3 animations:^{
+            [UIView animateWithDuration:0.5 animations:^{
                 CGRect newLabel = self.updatedPriceLabel.frame;
                 self.updatedPriceLabel.alpha = 1.0;
                 newLabel.origin.y =  CGRectGetMaxY(self.averageLabel.frame) + 3.0;
                 self.updatedPriceLabel.frame = newLabel;
             }completion:^(BOOL finished) {
                 //Let the user see and read the animation
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self.priceChangeContainer removeFromSuperview];
                     [self exitPriceUpdater];
                 });

@@ -41,7 +41,6 @@
 		A093BCC81D724DD3009A8F55 /* SF-UI-Text-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A093BCC01D724C64009A8F55 /* SF-UI-Text-RegularItalic.otf */; };
 		A093BCC91D724DD3009A8F55 /* SF-UI-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A093BCC11D724C64009A8F55 /* SF-UI-Display-Bold.otf */; };
 		A093BCCA1D724DD3009A8F55 /* SF-UI-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A093BCC21D724C64009A8F55 /* SF-UI-Display-Regular.otf */; };
-		A0B1F9741D77A9EA00699A80 /* PriceUpdateAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0B1F9731D77A9EA00699A80 /* PriceUpdateAnimationView.m */; };
 		A0BCBD821D67C47200C9ED04 /* RestaurantDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BCBD811D67C47200C9ED04 /* RestaurantDataSource.m */; };
 		A0BCBD901D67C95C00C9ED04 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BCBD8F1D67C95C00C9ED04 /* MobileCoreServices.framework */; };
 		A0BCBD921D67C96600C9ED04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0BCBD911D67C96600C9ED04 /* Foundation.framework */; };
@@ -120,8 +119,6 @@
 		A093BCC01D724C64009A8F55 /* SF-UI-Text-RegularItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-UI-Text-RegularItalic.otf"; path = "../../Feedly-iOS/Joyspace/SF-UI-Text-RegularItalic.otf"; sourceTree = "<group>"; };
 		A093BCC11D724C64009A8F55 /* SF-UI-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-UI-Display-Bold.otf"; path = "../../Feedly-iOS/Joyspace/SF-UI-Display-Bold.otf"; sourceTree = "<group>"; };
 		A093BCC21D724C64009A8F55 /* SF-UI-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-UI-Display-Regular.otf"; path = "../../Feedly-iOS/Joyspace/SF-UI-Display-Regular.otf"; sourceTree = "<group>"; };
-		A0B1F9721D77A9EA00699A80 /* PriceUpdateAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PriceUpdateAnimationView.h; sourceTree = "<group>"; };
-		A0B1F9731D77A9EA00699A80 /* PriceUpdateAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PriceUpdateAnimationView.m; sourceTree = "<group>"; };
 		A0BCBD801D67C47200C9ED04 /* RestaurantDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantDataSource.h; sourceTree = "<group>"; };
 		A0BCBD811D67C47200C9ED04 /* RestaurantDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantDataSource.m; sourceTree = "<group>"; };
 		A0BCBD871D67C4F300C9ED04 /* FoodwiseDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoodwiseDefines.h; sourceTree = "<group>"; };
@@ -359,8 +356,6 @@
 				A06158881D67BB36005C7C74 /* LaunchScreen.storyboard */,
 				A024395D1D7684BD00BA4017 /* StarRatingView.h */,
 				A024395E1D7684BD00BA4017 /* StarRatingView.m */,
-				A0B1F9721D77A9EA00699A80 /* PriceUpdateAnimationView.h */,
-				A0B1F9731D77A9EA00699A80 /* PriceUpdateAnimationView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -558,7 +553,6 @@
 				A093BCBA1D723B96009A8F55 /* UIFont+Extension.m in Sources */,
 				A0BCBDA31D6A6C0F00C9ED04 /* LoginViewController.m in Sources */,
 				A061587F1D67BB36005C7C74 /* AppDelegate.m in Sources */,
-				A0B1F9741D77A9EA00699A80 /* PriceUpdateAnimationView.m in Sources */,
 				A093BCB61D7237B0009A8F55 /* RestaurantDetailViewCell.m in Sources */,
 				A03D3B371D77F9FF008455F1 /* TitlePageView.m in Sources */,
 				A0BF222D1D6CF6CF0024148A /* LayoutBounds.m in Sources */,
