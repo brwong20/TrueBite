@@ -356,9 +356,6 @@ int i = 0;
 {
     MapViewController* mapView = [[MapViewController alloc]init];
     
-    //Don't set them to each other because if we change restaurantLocations in mapView, visibileRestaurants will change too... (pointers!).
-    mapView.restaurantLocations = [[NSMutableArray alloc]initWithArray:self.visibleRestaurants];
-    
     [UIView animateWithDuration:0.4 animations:^{
         [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navigationController.view cache:NO];
         [self.navigationController pushViewController:mapView animated:NO];

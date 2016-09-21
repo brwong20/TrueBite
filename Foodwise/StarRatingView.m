@@ -50,20 +50,28 @@ static int MAX_STARS = 5;
     
     //Start by filling the full stars first
     for (int i = 0; i < fullStars; i++) {
-        UIImageView *fullStar = [[UIImageView alloc]initWithFrame:CGRectMake(xPoint, self.ratingContainer.frame.size.height/2 - self.ratingContainer.frame.size.height * 0.475, self.ratingContainer.frame.size.width/5.25, self.ratingContainer.frame.size.height * 0.97)];
-        fullStar.contentMode = UIViewContentModeScaleAspectFit;
-        fullStar.backgroundColor = UIColorFromRGB(0xDCDBDC);
-        [fullStar setImage:[UIImage imageNamed:@"star_full"]];
-        [self.ratingContainer addSubview:fullStar];
+        UIView *starBackground = [[UIView alloc]initWithFrame:CGRectMake(xPoint, 0, self.ratingContainer.frame.size.width/5, self.ratingContainer.frame.size.height)];
+        starBackground.backgroundColor = UIColorFromRGB(0xDCDBDC);
+        [self.ratingContainer addSubview:starBackground];
         
-        xPoint += self.ratingContainer.frame.size.width/5;
+        UIImageView *fullStar = [[UIImageView alloc]initWithFrame:CGRectMake(starBackground.frame.size.width/2 - starBackground.frame.size.width * 0.4, starBackground.frame.size.height/2 - starBackground.frame.size.height * 0.4, starBackground.frame.size.width * 0.8, starBackground.frame.size.height * 0.8)];
+        fullStar.contentMode = UIViewContentModeScaleAspectFit;
+        fullStar.backgroundColor = [UIColor clearColor];
+        [fullStar setImage:[UIImage imageNamed:@"star_full"]];
+        [starBackground addSubview:fullStar];
+        
+        xPoint += self.ratingContainer.frame.size.width/4.75;
     }
     
     //Add half star first since there can only be one, then fill the rest with empty stars - We round all ratings UP (i.e 7.5 = 8 = 4 stars)
     if (halfStar == 1) {
-        UIImageView *halfStar = [[UIImageView alloc]initWithFrame:CGRectMake(xPoint, self.ratingContainer.frame.size.height/2 - self.ratingContainer.frame.size.height * 0.475, self.ratingContainer.frame.size.width/5.25, self.ratingContainer.frame.size.height * 0.97)];
+        UIView *starBackground = [[UIView alloc]initWithFrame:CGRectMake(xPoint, 0, self.ratingContainer.frame.size.width/5, self.ratingContainer.frame.size.height)];
+        starBackground.backgroundColor = UIColorFromRGB(0xDCDBDC);
+        [self.ratingContainer addSubview:starBackground];
+        
+        UIImageView *halfStar = [[UIImageView alloc]initWithFrame:CGRectMake(starBackground.frame.size.width/2 - starBackground.frame.size.width * 0.4, starBackground.frame.size.height/2 - starBackground.frame.size.height * 0.4, starBackground.frame.size.width * 0.8, starBackground.frame.size.height * 0.8)];
         halfStar.contentMode = UIViewContentModeScaleAspectFit;
-        halfStar.backgroundColor = UIColorFromRGB(0xDCDBDC);
+        halfStar.backgroundColor = [UIColor clearColor];
         
         //If rating is X.5, round up by giving it a full star :)
         if (decimal >= 0.5) {
@@ -71,25 +79,29 @@ static int MAX_STARS = 5;
         }else{
             [halfStar setImage:[UIImage imageNamed:@"star_half"]];
         }
-        [self.ratingContainer addSubview:halfStar];
+        [starBackground addSubview:halfStar];
         
-        xPoint += (self.ratingContainer.frame.size.width/5);//Right after the last full star!
+        xPoint += self.ratingContainer.frame.size.width/4.75; //Right after the last full star!
     }
     
     NSInteger starsLeft = MAX_STARS - (fullStars + halfStar);
     
     //Empty stars
     for (int j = 0; j < starsLeft; j++) {
-        UIImageView *emptyStar = [[UIImageView alloc]initWithFrame:CGRectMake(xPoint, self.ratingContainer.frame.size.height/2 - self.ratingContainer.frame.size.height * 0.475, self.ratingContainer.frame.size.width/5.25, self.ratingContainer.frame.size.height * 0.97)];
-        emptyStar.contentMode = UIViewContentModeScaleAspectFit;
-        emptyStar.backgroundColor = UIColorFromRGB(0xDCDBDC);
-        [emptyStar setImage:[UIImage imageNamed:@"star_empty"]];
-        [self.ratingContainer addSubview:emptyStar];
+        UIView *starBackground = [[UIView alloc]initWithFrame:CGRectMake(xPoint, 0, self.ratingContainer.frame.size.width/5, self.ratingContainer.frame.size.height)];
+        starBackground.backgroundColor = UIColorFromRGB(0xDCDBDC);
+        [self.ratingContainer addSubview:starBackground];
         
-        xPoint += self.ratingContainer.frame.size.width/5;
+        UIImageView *emptyStar =  [[UIImageView alloc]initWithFrame:CGRectMake(starBackground.frame.size.width/2 - starBackground.frame.size.width * 0.4, starBackground.frame.size.height/2 - starBackground.frame.size.height * 0.4, starBackground.frame.size.width * 0.8, starBackground.frame.size.height * 0.8)];
+        emptyStar.contentMode = UIViewContentModeScaleAspectFit;
+        emptyStar.backgroundColor = [UIColor clearColor];
+        [emptyStar setImage:[UIImage imageNamed:@"star_empty"]];
+        [starBackground addSubview:emptyStar];
+        
+        xPoint += self.ratingContainer.frame.size.width/4.75;
     }
     
-    
+    //[LayoutBounds drawBoundsForAllLayers:self];
 }
 
 @end
