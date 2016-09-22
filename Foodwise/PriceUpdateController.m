@@ -259,9 +259,7 @@
 {
     //Don't want user submitting multiple prices at once
     //self.submitButton.userInteractionEnabled = NO;
-    
-    //Before anything, we must reverse the string since we make the user input them in reverse order
-    //NSString *reversedString = [self reverseString:self.priceField.text];
+
     NSNumber *priceToSubmit = [NSNumber numberWithDouble:(self.priceField.text.doubleValue/100)];//We have to divide by 10 since we're always taking the price value in as a 4 digit value!
     
     //CHECK IF USER IS CONNECTED TO SERVER. IF NOT, NO COMPLETION BLOCKS ARE CALLED.....
@@ -448,7 +446,7 @@
                 self.updatedPriceLabel.frame = newLabel;
             }completion:^(BOOL finished) {
                 //Let the user see and read the animation
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self.priceChangeContainer removeFromSuperview];
                     [self exitPriceUpdater];
                 });

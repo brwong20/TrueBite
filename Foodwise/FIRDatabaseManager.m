@@ -52,21 +52,25 @@
                     failureHandler:(void (^)(id))failureHandler
 {
     //With this, only ONE price can be submitted/updated by a user
-    NSDictionary *priceToSubmit = @{self.currentUser.uid:newPrice};
-    [[[self.restaurantsRef child:restaurant.restaurantId]child:@"individualPrices"]updateChildValues:priceToSubmit];
+    NSString *priceKey = [[[self.restaurantsRef child:restaurant.restaurantId]child:@"individualPrices"]childByAutoId].key;
+    NSDictionary *priceToSubmit = @{priceKey:newPrice};
+    [[[[self.restaurantsRef child:restaurant.restaurantId]child:@"individualPrices"]child:self.currentUser.uid]updateChildValues:priceToSubmit];
     
-    //Get new prices/update average locally and remotely.
-    [[[self.restaurantsRef child:restaurant.restaurantId]child:@"individualPrices"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-        NSDictionary *newPrices = snapshot.value;
-        //Refresh prices and recalculate average to keep data as realtime as possible!
-        [restaurant.individualPrices removeAllObjects];
-        [restaurant.individualPrices addObjectsFromArray:[newPrices allValues]];
-        [restaurant calculateAveragePrice];
+    //Get the price just submitted and add to our local array of prices to calc new avg.
+    [[[[self.restaurantsRef child:restaurant.restaurantId]child:@"individualPrices"]child:self.currentUser.uid] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        NSDictionary *userPrices = snapshot.value;
+        NSNumber *newPrice = [userPrices objectForKey:priceKey];
         
+        //Refresh prices and recalculate average to keep data realtime.
+        [restaurant.individualPrices addObject:newPrice];
+        
+        //Calculate new average with local prices and the price just added, then update in database.
+        [restaurant calculateAveragePrice];
         NSDictionary *newAvgPrice = @{@"individualAvgPrice":restaurant.individualAvgPrice};
         [[self.restaurantsRef child:restaurant.restaurantId]updateChildValues:newAvgPrice];
         
         completionHandler(newAvgPrice);
+        
         return;
     }];
 

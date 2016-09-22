@@ -36,7 +36,6 @@
         
         self.mapView = [[GMSMapView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navigationButton.frame), frame.size.width, frame.size.height - self.navigationButton.frame.size.height)];
         self.mapView.myLocationEnabled = YES;
-        self.mapView.delegate = self;
         [self addSubview:self.mapView];
     }
     
@@ -55,33 +54,6 @@
 {
     [self.mapView animateToZoom:15.0];
     [self.mapView animateToLocation:locationCoordinate];
-}
-
-#pragma GMSMapViewDelegate methods 
-
-//Acts as a tap gesture for the mapView! Only for expand, make the close it's own button so the user can tap and use the map!
-- (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
-{
-    if (!self.isExpanded) {
-        [UIView animateWithDuration:0.3 animations:^{
-            CGRect frame = self.frame;
-            CGRect mapFrame = self.mapView.frame;
-
-            frame = CGRectMake(0, 0, APPLICATION_FRAME.size.width, APPLICATION_FRAME.size.height);
-            mapFrame = CGRectMake(0, CGRectGetMaxY(self.navigationButton.frame), frame.size.width, frame.size.height - (self.navigationButton.frame.size.height + 64.0));//64.0 is the nav + status bar
-            
-            self.frame = frame;
-            self.mapView.frame  = mapFrame;
-            
-            self.isExpanded = YES;
-        }];
-    }else{
-        
-        if ([self.delegate respondsToSelector:@selector(mapViewDidClose)]) {
-            [self.delegate mapViewDidClose];
-            self.isExpanded = NO;
-        }
-    }
 }
 
 - (void)promptNavigation

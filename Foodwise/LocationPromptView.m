@@ -68,9 +68,6 @@
         self.permissionButton.backgroundColor = APPLICATION_BLUE_COLOR;
 
         [self addSubview:self.permissionButton];
-        
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"com.truebite.onboarding.location"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
     }
     
     return self;

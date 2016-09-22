@@ -25,43 +25,38 @@
     
     if (self) {
         
-        self.infoTitle = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 5.0, self.frame.size.width * 0.4, 18.0)];
-        self.infoTitle.text = @"Address";
+        self.infoTitle = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 5.0, APPLICATION_FRAME.size.width * 0.3, 18.0)];
+        self.infoTitle.text = @"Info";
         self.infoTitle.font = [UIFont semiboldFontWithSize:17.0];
         self.infoTitle.textColor = APPLICATION_FONT_COLOR;
         [self.contentView addSubview:self.infoTitle];
         
-        self.addressLabel = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.infoTitle.frame), self.frame.size.width * 0.58, 60.0)];
-        self.addressLabel.numberOfLines = 0;
-        self.addressLabel.textColor = [UIColor lightGrayColor];
-        self.addressLabel.font = [UIFont fontWithSize:16.0];
-        [self.contentView addSubview:self.addressLabel];
-        
-        //Make phone call it's own cell
-        self.phoneNumber = [[UITextView alloc]initWithFrame:CGRectMake(APPLICATION_FRAME.size.width - self.frame.size.width * 0.4, CGRectGetMinY(self.addressLabel.frame), self.frame.size.width * 0.4, 20.0)];
-        self.phoneNumber.textContainerInset = UIEdgeInsetsZero;
-        self.phoneNumber.textAlignment = NSTextAlignmentRight;
-        self.phoneNumber.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
+        self.phoneNumber = [[UITextView alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.infoTitle.frame) + 1.5, APPLICATION_FRAME.size.width * 0.7, 18.0)];
+        self.phoneNumber.textColor = [UIColor lightGrayColor];
+        self.phoneNumber.textContainerInset = UIEdgeInsetsMake(0, -5, 0, 0);
+        self.phoneNumber.textAlignment = NSTextAlignmentLeft;
         self.phoneNumber.editable = NO;
+        self.phoneNumber.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
         self.phoneNumber.font = [UIFont fontWithSize:16.0];
         self.phoneNumber.userInteractionEnabled = YES;
         self.phoneNumber.scrollEnabled = NO;
         [self.contentView addSubview:self.phoneNumber];
+        
+        self.addressTextView = [[UITextView alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.phoneNumber.frame) + 1.5, APPLICATION_FRAME.size.width * 0.7, 60.0)];
+        self.addressTextView.textContainerInset = UIEdgeInsetsMake(0, -5, 0, 0);
+        self.addressTextView.scrollEnabled = NO;
+        self.addressTextView.userInteractionEnabled = NO;
+        self.addressTextView.backgroundColor = [UIColor clearColor];
+        self.addressTextView.textColor = [UIColor lightGrayColor];
+        self.addressTextView.font = [UIFont fontWithSize:16.0];
+        self.addressTextView.textAlignment = NSTextAlignmentLeft;
+        [self.contentView addSubview:self.addressTextView];
         
         //[LayoutBounds drawBoundsForAllLayers:self];
     }
     return self;
 }
 
-- (void)resizeToFitAddress:(NSString*)address
-{
-    self.addressLabel.text = address;
-    [self.addressLabel sizeToFit];
-    
-    CGRect addressFrame = self.addressLabel.frame;
-    addressFrame.origin.x = CGRectGetMinX(self.infoTitle.frame);
-    addressFrame.origin.y = CGRectGetMaxY(self.infoTitle.frame) + 2.0;
-    self.addressLabel.frame = addressFrame;
-}
+
 
 @end
