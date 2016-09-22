@@ -118,7 +118,7 @@
                 self.hoursOfOperation = hoursTodayString;
             }
         }else{
-            self.hoursOfOperation = @"Hours currently unavailable";
+            self.hoursOfOperation = @"Unavailable";
         }
 
         NSArray *tags = venueDetails[@"tags"];
@@ -414,7 +414,7 @@
     {
         HoursTableViewCell *hourCell = [[HoursTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"hourCell"];
         
-        if ([self.hoursOfOperation isEqualToString:@"Hours currently unavailable"])
+        if ([self.hoursOfOperation isEqualToString:@"Unavailable"])
         {
             hourCell.openNow.text = @"";
         }
