@@ -26,7 +26,7 @@
     if (self) {
         
         self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 5.0, self.frame.size.width * 0.6, 22.0)];
-        self.restaurantName.numberOfLines = 2;
+        self.restaurantName.numberOfLines = 0;
         self.restaurantName.font = [UIFont semiboldFontWithSize:21.0];
         self.restaurantName.textColor = APPLICATION_FONT_COLOR;
         self.restaurantName.backgroundColor = [UIColor clearColor];
@@ -94,9 +94,9 @@
     self.restaurantName.text = selectedRestaurant.name;
     [self.restaurantName sizeToFit];
 
-    CGRect openNowFrame = self.category.frame;
-    openNowFrame.origin.y = CGRectGetMaxY(self.restaurantName.frame);
-    self.category.frame = openNowFrame;
+    CGRect categoryFrame = self.category.frame;
+    categoryFrame.origin.y = CGRectGetMaxY(self.restaurantName.frame);
+    self.category.frame = categoryFrame;
     
     CGRect starFrame = self.starRatingView.frame;
     starFrame.origin.y = CGRectGetMaxY(self.category.frame) + 2.0;
@@ -105,6 +105,10 @@
     CGRect ratingsFrame = self.ratingsCountLabel.frame;
     ratingsFrame.origin.y = CGRectGetMaxY(self.starRatingView.frame) + 2.0;
     self.ratingsCountLabel.frame = ratingsFrame;
+    
+    CGRect distanceFrame = self.distance.frame;
+    distanceFrame.origin.y = CGRectGetMaxY(self.ratingsCountLabel.frame);
+    self.distance.frame = distanceFrame;
 }
 
 - (void)clickedPriceButton

@@ -36,7 +36,7 @@
 
 
 
-@interface RestaurantDetailViewController ()<UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, RestaurantDetailCellDelegate, SpecificMapViewDelegate, MWPhotoBrowserDelegate>
+@interface RestaurantDetailViewController ()<UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, RestaurantDetailCellDelegate, SpecificMapViewDelegate, MWPhotoBrowserDelegate, GMSMapViewDelegate>
 
 @property (assign, nonatomic) FIRDatabaseHandle priceHandle;
 @property (strong, nonatomic) RestaurantDataSource *restaurantDataSource;
@@ -68,12 +68,13 @@
     self.restaurantDataSource = [[RestaurantDataSource alloc]init];
     self.dbManager = [FIRDatabaseManager sharedManager];
     
-    self.tableView = [[UITableView alloc]initWithFrame:self.view.frame style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64.0) style:UITableViewStylePlain];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.restaurantMapView = [[SpecificMapView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.3)];
+    self.restaurantMapView = [[SpecificMapView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.35)];
     self.restaurantMapView.delegate = self;
+    self.restaurantMapView.mapView.delegate = self;
     CLLocationCoordinate2D restaurantCoordinate = CLLocationCoordinate2DMake(self.selectedRestaurant.latitude.floatValue, self.selectedRestaurant.longitude.floatValue);
     self.restaurantMapView.coordinate = restaurantCoordinate;
     [self.restaurantMapView pinLocation:restaurantCoordinate];
@@ -246,6 +247,39 @@
 
 #pragma mark - SpecificMapView delegate methods
 
+- (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    if (self.restaurantMapView.frame.size.height != self.view.frame.size.height) {//If map view isn't expanded
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = self.restaurantMapView.frame;
+            CGRect mapFrame = self.restaurantMapView.mapView.frame;
+            
+            frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+            mapFrame = CGRectMake(0, CGRectGetMaxY(self.restaurantMapView.navigationButton.frame), frame.size.width, frame.size.height - self.restaurantMapView.navigationButton.frame.size.height);
+            
+            self.restaurantMapView.frame = frame;
+            self.restaurantMapView.mapView.frame  = mapFrame;
+            
+            //Set back to original position after this? Need to do this because map will be offset if user scrolls down.
+            //Lock scrolling for now so user doesn't see white space under map
+            [self.tableView setContentOffset:CGPointZero animated:YES];
+            [self.tableView setScrollEnabled:NO];
+        }];
+    }else{
+        //Collapse mapView and bring user back to the restaurant's pin
+        [UIView animateWithDuration:0.3 animations:^{
+            self.restaurantMapView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.35);
+            self.restaurantMapView.mapView.frame = CGRectMake(0, CGRectGetMaxY(self.restaurantMapView.navigationButton.frame), self.restaurantMapView.frame.size.width, self.restaurantMapView.frame.size.height - self.restaurantMapView.navigationButton.frame.size.height);
+            
+            //Because our mapView expands outside of the tableFooterView onto the main view, simply set it as the table footer view again to have it in its original position again
+            self.tableView.tableFooterView = self.restaurantMapView;
+            [self.tableView setScrollEnabled:YES];
+        }completion:^(BOOL finished) {
+            [self.restaurantMapView animateToLocation:self.restaurantMapView.coordinate];
+        }];
+    }
+}
+
 - (void)presentNavigationAlertWithCoordinate:(CLLocationCoordinate2D)coordinate
 {
     UIAlertController *navAlert = [UIAlertController alertControllerWithTitle:@"Open with" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
@@ -283,21 +317,6 @@
     [self presentViewController:navAlert animated:YES completion:nil];
 }
 
-- (void)mapViewDidClose
-{
-#warning Need to account for when user scrolls down on table view. Also find a better way to do this overall with all the sizing
-    //Collapse mapView and bring user back to the restaurant's pin
-    [UIView animateWithDuration:0.3 animations:^{
-        self.restaurantMapView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 0.3);
-        self.restaurantMapView.mapView.frame = CGRectMake(0, CGRectGetMaxY(self.restaurantMapView.navigationButton.frame), self.restaurantMapView.frame.size.width, self.restaurantMapView.frame.size.height - self.restaurantMapView.navigationButton.frame.size.height);
-     
-        //Because our mapView expands outside of the tableFooterView onto the main view, simply set it as the table footer view again to have it in its original position again
-        self.tableView.tableFooterView = self.restaurantMapView;
-    }completion:^(BOOL finished) {
-        [self.restaurantMapView animateToLocation:self.restaurantMapView.coordinate];
-    }];
-}
-
 #pragma mark - RestaurantDetailViewCell delegate methods
 
 - (void)priceButtonClicked
@@ -325,47 +344,32 @@
 {
     if (indexPath.row == 0)
     {
-        return 115.0;
+        //Dynamically calculate cell size based on title length
+        if (self.selectedRestaurant.name && ![self.selectedRestaurant.name isEqualToString:@""]) {
+            CGSize maxCellSize = CGSizeMake(APPLICATION_FRAME.size.width * 0.3, INT_MAX);//Setting the appropriate width is a MUST here!!
+            CGRect nameSize = [self.selectedRestaurant.name boundingRectWithSize:maxCellSize
+                                                                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                        attributes:@{NSFontAttributeName:[UIFont semiboldFontWithSize:21.0]} context:nil];
+            return nameSize.size.height + 87.0;//Don't forget to account for title & rest of cell!
+        }else{
+            return 115.0;
+        }
     }
-    else if (indexPath.row == 1)
-    {
-        return 55.0;
-    }
-    else if(indexPath.row == 2)
-    {
-//        //Dynamically calculate cell size based on what the hours look like
-//        if (self.hoursOfOperation && ![self.hoursOfOperation isEqualToString:@""]) {
-//            CGSize maxCellSize = CGSizeMake(self.view.frame.size.width, 90.0);
-//            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
-//            paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-//            
-//            CGRect hoursLabelSize = [self.hoursOfOperation boundingRectWithSize:maxCellSize options:NSStringDrawingUsesLineFragmentOrigin
-//                                                                     attributes:@{NSFontAttributeName:[UIFont fontWithSize:16.0], NSParagraphStyleAttributeName: paragraphStyle.copy}
-//                                     
-//                                                                        context:nil];
-//            return hoursLabelSize.size.height + 40.0;//Don't forget to account for title & rest of cell!
-//        }else{
-//            return 50.0;
-//        }
-        
-        return 55.0;
-    }else if (indexPath.row == 3)
+    else if (indexPath.row == 1 || indexPath.row == 2 || indexPath.row == 3)
     {
         return 55.0;
     }
     else if (indexPath.row == 4)
     {
-        //Dynamically calculate cell size based on what the address looks like
+        //Dynamically calculate cell size based on address length
         if (self.selectedRestaurant.formattedAddress && ![self.selectedRestaurant.formattedAddress isEqualToString:@""]) {
-            CGSize maxCellSize = CGSizeMake(self.view.frame.size.width, 70.0);
-            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
-            paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-            CGRect hoursLabelSize = [self.selectedRestaurant.formattedAddress boundingRectWithSize:maxCellSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                        attributes:@{NSFontAttributeName:[UIFont fontWithSize:16.0], NSParagraphStyleAttributeName: paragraphStyle.copy}
-                                                                                           context:nil];
-            return hoursLabelSize.size.height + 45.0;//Don't forget to account for title & rest of cell!
+            CGSize maxCellSize = CGSizeMake(APPLICATION_FRAME.size.width * 0.7, INT_MAX);
+            CGRect hoursLabelSize = [self.selectedRestaurant.formattedAddress boundingRectWithSize:maxCellSize
+                                                                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                        attributes:@{NSFontAttributeName:[UIFont semiboldFontWithSize:16.0]} context:nil];
+            return hoursLabelSize.size.height + 48.0;//Don't forget to account for title & rest of cell!
         }else{
-            return 55.0;
+            return 40;
         }
     }
     else if (indexPath.row == 5)
@@ -430,6 +434,25 @@
     else if (indexPath.row == 3)
     {
         UITableViewCell *menuCell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"menuCell"];
+        
+        UILabel *menuTitle = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 4.0, APPLICATION_FRAME.size.width * 0.3, 18.0)];
+        menuTitle.text = @"Menu";
+        menuTitle.textColor = APPLICATION_FONT_COLOR;
+        menuTitle.font = [UIFont semiboldFontWithSize:17.0];
+        [menuCell.contentView addSubview:menuTitle];
+        
+        UILabel *availableLabel = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(menuTitle.frame) + 2.0, APPLICATION_FRAME.size.width * 0.3, 17.0)];
+        availableLabel.font = [UIFont fontWithSize:16.0];
+        availableLabel.textColor = [UIColor lightGrayColor];
+        if ([self.selectedRestaurant.menuURL isEqualToString:@""]) {
+            availableLabel.text = @"Unavailable";
+        }else{
+            availableLabel.text = @"Available";
+            menuCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
+        [menuCell.contentView addSubview:availableLabel];
+        
+        /*
         menuCell.selectionStyle = UITableViewCellSelectionStyleNone;
         menuCell.textLabel.font = [UIFont semiboldFontWithSize:17.0];
         menuCell.textLabel.textColor = APPLICATION_FONT_COLOR;
@@ -442,13 +465,15 @@
             menuCell.detailTextLabel.text = @"Available";
             menuCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
+         */
         return menuCell;
     }
     else if (indexPath.row == 4)
     {
         RestaurantInfoTableViewCell *infoCell = [[RestaurantInfoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"addressCell"];
         infoCell.phoneNumber.text = self.selectedRestaurant.formattedPhoneNumber;
-        [infoCell resizeToFitAddress:self.selectedRestaurant.formattedAddress];
+        infoCell.addressTextView.text = self.selectedRestaurant.formattedAddress;
+        [infoCell.addressTextView sizeToFit];
         return infoCell;
     }
     else if (indexPath.row == 5)

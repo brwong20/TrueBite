@@ -95,7 +95,7 @@
     }
     else
     {
-       self.formattedPhoneNumber = @"";
+       self.formattedPhoneNumber = @"Phone number unavailable";
     }
     
     if (categories && [categories isKindOfClass:[NSArray class]]) {
@@ -324,7 +324,7 @@
 - (void)retrievePriceDataFrom:(NSDictionary*)existingRestaurant
 {
     NSNumber *avgIndvPrice = existingRestaurant[@"individualAvgPrice"];
-    NSDictionary *indvPrices = existingRestaurant[@"individualPrices"];//Dictionary of key values since we link {userId:price} in order to only let them submit/update a single price.
+    NSDictionary *indvPrices = existingRestaurant[@"individualPrices"];//Dictionary of user keys which contains each price they've submitted.
     
     if (avgIndvPrice && [avgIndvPrice isKindOfClass:[NSNumber class]]) {
         self.individualAvgPrice = avgIndvPrice;
@@ -335,7 +335,10 @@
     }
     
     if (indvPrices && [indvPrices isKindOfClass:[NSDictionary class]]) {
-        [self.individualPrices addObjectsFromArray:[indvPrices allValues]];
+        //Each user has their own dictionary of submitted prices so get each dictionary, then append all their values to the price array. Easier to do like this for when a user submits a new price, we can just get that and append it instead of doing this dictionary parsing process again.
+        for (NSDictionary *userPrices in indvPrices.allValues) {
+            [self.individualPrices addObjectsFromArray:userPrices.allValues];
+        }
     }
 }
 

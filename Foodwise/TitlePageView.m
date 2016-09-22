@@ -56,9 +56,6 @@
         [self.startButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self.startButton addTarget:self action:@selector(startButtonClicked) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.startButton];
-        
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"com.truebite.onboarding.title"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
     }
     
     return self;

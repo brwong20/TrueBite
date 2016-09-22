@@ -223,10 +223,10 @@ int i = 0;
         }
         
 #pragma Need at least one restaurant in db... Find a fix for this. Also what if we want to add a new key to our db? Have to do something like this as well
-//        for (FoursquareRestaurant *restaurant in self.restaurantSet) {
-//            //Update/Save restaurants by their id into db.
-//            [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
-//        }
+        for (FoursquareRestaurant *restaurant in self.restaurantSet) {
+            //Update/Save restaurants by their id into db.
+            [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
+        }
         
         //Retrieve all restaurants stored in our db so we can get our price data if we have any.
         [[self.dbRef child:@"restaurants"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
@@ -240,8 +240,6 @@ int i = 0;
                     //If the restaurant isn't in our database, add it as a new node. otherwise it's a restaurant we already have saved so retrieve the relevant price data on it!
                     if (foundRestaurant) {
                         [restaurant retrievePriceDataFrom:foundRestaurant];
-                    }else{
-                        [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
                     }
                 }
                 
@@ -445,7 +443,7 @@ int i = 0;
         cell.restaurantName.text = restaurant.name;
         cell.addressLabel.text = restaurant.shortAddress;
         cell.categoryLabel.text = [NSString stringWithFormat:@"%@", restaurant.category];
-        cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2fmi", restaurant.distance.doubleValue];
+        cell.distanceLabel.text = [NSString stringWithFormat:@"%0.1fmi", restaurant.distance.doubleValue];
         cell.priceLabel.text = [NSString stringWithFormat:@"$%0.2f", restaurant.individualAvgPrice.doubleValue];
         [cell.starRatingView convertNumberToStars:restaurant.rating];
         [cell.featuredImage setImageWithURL:[NSURL URLWithString:restaurant.featuredImageURL]placeholderImage:[UIImage new]];

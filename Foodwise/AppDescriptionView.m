@@ -61,9 +61,6 @@
         [self.okButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self.okButton addTarget:self action:@selector(okButtonClicked) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.okButton];
-
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"com.truebite.onboarding.detail"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
     }
     
     return self;

@@ -11,7 +11,7 @@
 @interface RestaurantInfoTableViewCell : UITableViewCell
 
 @property (strong, nonatomic)UILabel *infoTitle;
-@property (strong, nonatomic)UILabel *addressLabel;
+@property (strong, nonatomic)UITextView *addressTextView;
 @property (strong, nonatomic)UITextView *phoneNumber;
 
 - (void)resizeToFitAddress:(NSString*)address;
