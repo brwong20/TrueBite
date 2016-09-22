@@ -346,11 +346,11 @@
     {
         //Dynamically calculate cell size based on title length
         if (self.selectedRestaurant.name && ![self.selectedRestaurant.name isEqualToString:@""]) {
-            CGSize maxCellSize = CGSizeMake(APPLICATION_FRAME.size.width * 0.3, INT_MAX);//Setting the appropriate width is a MUST here!!
+            CGSize maxCellSize = CGSizeMake(APPLICATION_FRAME.size.width * 0.5, INT_MAX);//Setting the appropriate width is a MUST here!!
             CGRect nameSize = [self.selectedRestaurant.name boundingRectWithSize:maxCellSize
                                                                                            options:NSStringDrawingUsesLineFragmentOrigin
                                                                                         attributes:@{NSFontAttributeName:[UIFont semiboldFontWithSize:21.0]} context:nil];
-            return nameSize.size.height + 87.0;//Don't forget to account for title & rest of cell!
+            return nameSize.size.height + 85.0;//Account for other elements!
         }else{
             return 115.0;
         }
@@ -390,7 +390,7 @@
         detailCell.delegate = self;
         [detailCell populateCellTypeWithData:self.selectedRestaurant];
         [detailCell.starRatingView convertNumberToStars:self.selectedRestaurant.rating];
-        detailCell.category.text = self.selectedRestaurant.category;
+        //detailCell.category.text = self.selectedRestaurant.category;
         detailCell.distance.text = [NSString stringWithFormat:@"%0.2f mi away", self.selectedRestaurant.distance.doubleValue];
         detailCell.priceLabel.text = [NSString stringWithFormat:@"$%0.2f", self.selectedRestaurant.individualAvgPrice.doubleValue];
         if (self.reviewCount.integerValue == 1) {
@@ -406,7 +406,8 @@
         HoursTableViewCell *tagCell = [[HoursTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"tagCell"];
         tagCell.hoursTitle.text = @"Cuisine";
         tagCell.openNow.hidden = YES;
-        [tagCell setTextWithFade:self.tags];
+        tagCell.hoursLabel.text = self.selectedRestaurant.shortCategory;
+        //[tagCell setTextWithFade:self.tags];
         return tagCell;
     }
     else if (indexPath.row == 2)

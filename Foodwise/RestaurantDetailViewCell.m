@@ -25,30 +25,32 @@
     
     if (self) {
         
-        self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 5.0, self.frame.size.width * 0.6, 22.0)];
+        self.restaurantName = [[UILabel alloc]initWithFrame:CGRectMake(15.0, 5.0, APPLICATION_FRAME.size.width * 0.5, 22.0)];
         self.restaurantName.numberOfLines = 0;
         self.restaurantName.font = [UIFont semiboldFontWithSize:21.0];
         self.restaurantName.textColor = APPLICATION_FONT_COLOR;
         self.restaurantName.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.restaurantName];
         
+        /*
         self.category = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.restaurantName.frame), self.frame.size.width * 0.6, 14.0)];
         self.category.font = [UIFont mediumFontWithSize:13.0];
         self.category.textColor = [UIColor lightGrayColor];
         self.category.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.category];
+         */
         
-        self.starRatingView = [[StarRatingView alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.category.frame) + 2.0 + self.frame.size.height * 0.07, APPLICATION_FRAME.size.width * 0.31, APPLICATION_FRAME.size.height * 0.03)];
+        self.starRatingView = [[StarRatingView alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.category.frame) + 3.0 + self.frame.size.height * 0.07, APPLICATION_FRAME.size.width * 0.31, APPLICATION_FRAME.size.height * 0.03)];
         [self.contentView addSubview:self.starRatingView];
         
-        self.ratingsCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.starRatingView.frame), APPLICATION_FRAME.size.width * 0.22, 14.0)];
+        self.ratingsCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.starRatingView.frame) + 3.0, APPLICATION_FRAME.size.width * 0.22, 14.0)];
         self.ratingsCountLabel.textColor = [UIColor lightGrayColor];
         self.ratingsCountLabel.font = [UIFont fontWithSize:13.0];
         self.ratingsCountLabel.text = NSTextAlignmentLeft;
         self.ratingsCountLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.ratingsCountLabel];
         
-        self.distance = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.ratingsCountLabel.frame) + 4.0, APPLICATION_FRAME.size.width * 0.22, 14.0)];
+        self.distance = [[UILabel alloc]initWithFrame:CGRectMake(15.0, CGRectGetMaxY(self.ratingsCountLabel.frame) + 3.0, APPLICATION_FRAME.size.width * 0.22, 14.0)];
         self.distance.font = [UIFont fontWithSize:13.0];
         self.distance.textColor = [UIColor lightGrayColor];
         self.distance.backgroundColor = [UIColor clearColor];
@@ -94,20 +96,22 @@
     self.restaurantName.text = selectedRestaurant.name;
     [self.restaurantName sizeToFit];
 
+    /*
     CGRect categoryFrame = self.category.frame;
     categoryFrame.origin.y = CGRectGetMaxY(self.restaurantName.frame);
     self.category.frame = categoryFrame;
+    */
     
     CGRect starFrame = self.starRatingView.frame;
-    starFrame.origin.y = CGRectGetMaxY(self.category.frame) + 2.0;
+    starFrame.origin.y = CGRectGetMaxY(self.restaurantName.frame) + 3.0;
     self.starRatingView.frame = starFrame;
     
     CGRect ratingsFrame = self.ratingsCountLabel.frame;
-    ratingsFrame.origin.y = CGRectGetMaxY(self.starRatingView.frame) + 2.0;
+    ratingsFrame.origin.y = CGRectGetMaxY(self.starRatingView.frame) + 3.0;
     self.ratingsCountLabel.frame = ratingsFrame;
     
     CGRect distanceFrame = self.distance.frame;
-    distanceFrame.origin.y = CGRectGetMaxY(self.ratingsCountLabel.frame);
+    distanceFrame.origin.y = CGRectGetMaxY(self.ratingsCountLabel.frame) + 3.0;
     self.distance.frame = distanceFrame;
 }
 
