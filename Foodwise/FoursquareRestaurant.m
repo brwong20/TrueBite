@@ -209,9 +209,10 @@
     NSNumber *longitude = dictionary[@"location"][@"lng"];
     NSString *formattedPhone = dictionary[@"contact"][@"formattedPhone"];
     NSString *ratingString = dictionary[@"rating"];
-    NSNumber *priceTier = dictionary[@"details"][@"tier"];
+    NSNumber *priceTier = dictionary[@"price"][@"tier"];
     NSArray *categories = dictionary[@"categories"];
     NSString *menuLink = dictionary[@"menu"][@"mobileUrl"];
+    NSDictionary *bestPhoto = dictionary[@"bestPhoto"];
     
     self.restaurantId = restaurantId;
     
@@ -308,8 +309,27 @@
     if (menuLink && [menuLink isKindOfClass:[NSString class]]) {
         self.menuURL = menuLink;
     }else{
-        self.menuURL = @"";
+        //Use restaurant's url if they don't have a menu
+        NSString *restaurantURL = dictionary[@"url"];
+        if (restaurantURL && [restaurantURL isKindOfClass:[NSString class]]) {
+            self.menuURL = restaurantURL;
+        }else{
+            self.menuURL = @"";
+        }
     }
+                                     
+     if (bestPhoto && [bestPhoto isKindOfClass:[NSDictionary class]] && bestPhoto.count > 0)
+     {
+         NSString *prefix = bestPhoto[@"prefix"];
+         NSString *suffix = bestPhoto[@"suffix"];
+         
+         self.featuredImageURL = [NSString stringWithFormat:@"%@%@%@", prefix, SMALL_PHOTO_SIZE, suffix];
+         
+     }
+     else
+     {
+         self.featuredImageURL = @"";
+     }
 
     return self;
 }

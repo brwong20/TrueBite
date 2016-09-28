@@ -209,8 +209,6 @@ int i = 0;
                                              completionHandler:^(id JSON) {
         NSArray *groups = JSON[@"response"][@"groups"];
         
-        //NSLog(@"%@", JSON[@"response"]);
-        
         NSDictionary *groupsData = [groups objectAtIndex:0];
         NSArray *restaurantArray = [groupsData valueForKey:@"items"];
         
@@ -223,16 +221,16 @@ int i = 0;
         }
         
 #pragma Need at least one restaurant in db... Find a fix for this. Also what if we want to add a new key to our db? Have to do something like this as well
+    /*
         for (FoursquareRestaurant *restaurant in self.restaurantSet) {
             //Update/Save restaurants by their id into db.
             [[[self.dbRef child:@"restaurants"]child:restaurant.restaurantId]updateChildValues:[restaurant fireBaseDictionary]];
         }
         
+     */
         //Retrieve all restaurants stored in our db so we can get our price data if we have any.
         [[self.dbRef child:@"restaurants"]observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
             NSDictionary *allRestaurants = snapshot.value;
-
-            //NSLog(@"%@", snapshot.value);
             
             if (allRestaurants.count > 0) {
                 for (FoursquareRestaurant *restaurant in self.restaurantSet) {
