@@ -223,6 +223,11 @@
                     //If the restaurant isn't in our database, add it as a new node. otherwise it's a restaurant we already have saved so retrieve the relevant price data on it!
                     if (foundRestaurant) {
                         [self.selectedRestaurant retrievePriceDataFrom:foundRestaurant];
+                        
+                        //We don't have this data since we don't even know what user is searching (unlike clicking a populated cell in the list view) for so pull it and update here
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                           self.priceLabel.text = [NSString stringWithFormat:@"$%0.2f", self.selectedRestaurant.individualAvgPrice.doubleValue];
+                        });
                     }else{
                         [self.restaurantDataSource getRestaurantDetailsFor:self.selectedRestaurant.restaurantId completionHandler:^(id JSON) {
                             NSDictionary *venueDetails = JSON[@"response"][@"venue"];
